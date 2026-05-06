@@ -492,7 +492,62 @@ V_{i} &= P_{i.} + V_{i-1} - P_{.i}
 \end{aligned}
 {:/}$$
 
-Visually, these repesent the sums of all points within "rectangles" with a bottom left corner on the main diagonal.
+Visually, these repesent the sums of all points within "rectangles" with a bottom left corner on the main diagonal. For example, $T_{2}$ is highlighted below
+
+<div style="text-align: center; margin: 1em 0;">
+  <table style="margin: 0 auto; border-collapse: collapse; width: auto;">
+    <thead>
+      <tr>
+        <th colspan="6">Observed recovery counts of birds ringed as adults</th>
+      </tr>
+      <tr>
+        <th style="border: 1px solid #ccc; padding: 6px 12px;" rowspan="3">$\text{Year marked}$</th>
+        <th style="border: 1px solid #ccc; padding: 6px 12px;" rowspan="3">$\text{Number marked}$</th>
+        <th style="border: 1px solid #ccc; padding: 6px 12px;" colspan="4">$\text{Year recovered}$</th>
+      </tr>
+      <tr>
+        <th style="border: 1px solid #ccc; padding: 6px 12px;">$1$</th>
+        <th style="border: 1px solid #ccc; padding: 6px 12px;">$2$</th>
+        <th style="border: 1px solid #ccc; padding: 6px 12px;">$3$</th>
+        <th style="border: 1px solid #ccc; padding: 6px 12px;">$4$</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="border: 1px solid #ccc;">  $1$</td>
+        <td style="border: 1px solid #ccc;">  $N_{1}$</td>
+        <td style="border: 1px solid #ccc;">  $R_{11}$</td>
+        <td style="border: 1px solid #ccc; background-color: rgba(0, 255, 0, 0.5);">  $R_{12}$</td>
+        <td style="border: 1px solid #ccc; background-color: rgba(0, 255, 0, 0.5);">  $R_{13}$</td>
+        <td style="border: 1px solid #ccc; background-color: rgba(0, 255, 0, 0.5);">  $R_{14}$</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ccc;">  $2$</td>
+        <td style="border: 1px solid #ccc;">  $N_{2}$</td>
+        <td style="border: 1px solid #ccc;">  </td>
+        <td style="border: 1px solid #ccc; background-color: rgba(0, 255, 0, 0.5);">  $R_{22}$</td>
+        <td style="border: 1px solid #ccc; background-color: rgba(0, 255, 0, 0.5);">  $R_{23}$</td>
+        <td style="border: 1px solid #ccc; background-color: rgba(0, 255, 0, 0.5);">  $R_{24}$</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ccc;">  $3$</td>
+        <td style="border: 1px solid #ccc;">  $N_{3}$</td>
+        <td style="border: 1px solid #ccc;">  </td>
+        <td style="border: 1px solid #ccc;">  </td>
+        <td style="border: 1px solid #ccc;">  $R_{33}$</td>
+        <td style="border: 1px solid #ccc;">  $R_{34}$</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ccc;">  $4$</td>
+        <td style="border: 1px solid #ccc;">  $N_{4}$</td>
+        <td style="border: 1px solid #ccc;">  </td>
+        <td style="border: 1px solid #ccc;">  </td>
+        <td style="border: 1px solid #ccc;">  </td>
+        <td style="border: 1px solid #ccc;">  $R_{44}$</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
 Let
 
