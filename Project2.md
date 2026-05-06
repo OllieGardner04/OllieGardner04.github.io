@@ -492,7 +492,7 @@ V_{i} &= P_{i.} + V_{i-1} - P_{.i}
 \end{aligned}
 {:/}$$
 
-Visually, these repesent the sums of all points within "rectangles" with a bottom left corner on the main diagonal. 
+Visually, these represent the sums of all points within "rectangles" with a bottom left corner on the main diagonal. 
 
 Below is the observed counts of recovered adults, with $T_{2}$ highlighted.
 
@@ -553,11 +553,12 @@ Below is the observed counts of recovered adults, with $T_{2}$ highlighted.
 		<td style="border: 1px solid #ccc;">  $R_{4.}$</td>
       </tr>
 	  <tr>
-		<td style="border: 1px solid #ccc;" colspan=2>  $Column totals$</td>
+		<td style="border: 1px solid #ccc;" colspan=2>  Column totals</td>
 		<td style="border: 1px solid #ccc;">  $R_{.1}$</td>
 		<td style="border: 1px solid #ccc;">  $R_{.2}$</td>
 		<td style="border: 1px solid #ccc;">  $R_{.3}$</td>
 		<td style="border: 1px solid #ccc;">  $R_{.4}$</td>
+		<td style="border: 1px solid #ccc;">  </td>
   	  </tr>
     </tbody>
   </table>
