@@ -553,7 +553,7 @@ Below is the observed counts of recovered adults, with $T_{2}$ highlighted.
 		<td style="border: 1px solid #ccc;">  $R_{4.}$</td>
       </tr>
 	  <tr>
-		<td style="border: 1px solid #ccc;" colspan=2>  Column totals</td>
+		<td style="border: 1px solid #ccc;" colspan=2> $\text{Column totals}$</td>
 		<td style="border: 1px solid #ccc;">  $R_{.1}$</td>
 		<td style="border: 1px solid #ccc;">  $R_{.2}$</td>
 		<td style="border: 1px solid #ccc;">  $R_{.3}$</td>
