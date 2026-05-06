@@ -492,18 +492,21 @@ V_{i} &= P_{i.} + V_{i-1} - P_{.i}
 \end{aligned}
 {:/}$$
 
-Visually, these repesent the sums of all points within "rectangles" with a bottom left corner on the main diagonal. For example, $T_{2}$ is highlighted below
+Visually, these repesent the sums of all points within "rectangles" with a bottom left corner on the main diagonal. 
+
+Below is the observed counts of recovered adults, with $T_{2}$ highlighted.
 
 <div style="text-align: center; margin: 1em 0;">
   <table style="margin: 0 auto; border-collapse: collapse; width: auto;">
     <thead>
       <tr>
-        <th colspan="6">Observed recovery counts of birds ringed as adults</th>
+        <th colspan="7">Observed recovery counts of birds ringed as adults</th>
       </tr>
       <tr>
         <th style="border: 1px solid #ccc; padding: 6px 12px;" rowspan="3">$\text{Year marked}$</th>
         <th style="border: 1px solid #ccc; padding: 6px 12px;" rowspan="3">$\text{Number marked}$</th>
         <th style="border: 1px solid #ccc; padding: 6px 12px;" colspan="4">$\text{Year recovered}$</th>
+		<th style="border: 1px solid #ccc; padding: 6px 12px;" rowspan="3">$\text{Row totals}$</th>
       </tr>
       <tr>
         <th style="border: 1px solid #ccc; padding: 6px 12px;">$1$</th>
@@ -520,6 +523,7 @@ Visually, these repesent the sums of all points within "rectangles" with a botto
         <td style="border: 1px solid #ccc; background-color: rgba(0, 255, 0, 0.5);">  $R_{12}$</td>
         <td style="border: 1px solid #ccc; background-color: rgba(0, 255, 0, 0.5);">  $R_{13}$</td>
         <td style="border: 1px solid #ccc; background-color: rgba(0, 255, 0, 0.5);">  $R_{14}$</td>
+		<td style="border: 1px solid #ccc;">  $R_{1.}$</td>
       </tr>
       <tr>
         <td style="border: 1px solid #ccc;">  $2$</td>
@@ -528,6 +532,7 @@ Visually, these repesent the sums of all points within "rectangles" with a botto
         <td style="border: 1px solid #ccc; background-color: rgba(0, 255, 0, 0.5);">  $R_{22}$</td>
         <td style="border: 1px solid #ccc; background-color: rgba(0, 255, 0, 0.5);">  $R_{23}$</td>
         <td style="border: 1px solid #ccc; background-color: rgba(0, 255, 0, 0.5);">  $R_{24}$</td>
+		<td style="border: 1px solid #ccc;">  $R_{2.}$</td>
       </tr>
       <tr>
         <td style="border: 1px solid #ccc;">  $3$</td>
@@ -536,6 +541,7 @@ Visually, these repesent the sums of all points within "rectangles" with a botto
         <td style="border: 1px solid #ccc;">  </td>
         <td style="border: 1px solid #ccc;">  $R_{33}$</td>
         <td style="border: 1px solid #ccc;">  $R_{34}$</td>
+		<td style="border: 1px solid #ccc;">  $R_{3.}$</td>
       </tr>
       <tr>
         <td style="border: 1px solid #ccc;">  $4$</td>
@@ -544,7 +550,15 @@ Visually, these repesent the sums of all points within "rectangles" with a botto
         <td style="border: 1px solid #ccc;">  </td>
         <td style="border: 1px solid #ccc;">  </td>
         <td style="border: 1px solid #ccc;">  $R_{44}$</td>
+		<td style="border: 1px solid #ccc;">  $R_{4.}$</td>
       </tr>
+	  <tr>
+		<td style="border: 1px solid #ccc;" colspan=2>  $Column totals$</td>
+		<td style="border: 1px solid #ccc;">  $R_{.1}$</td>
+		<td style="border: 1px solid #ccc;">  $R_{.2}$</td>
+		<td style="border: 1px solid #ccc;">  $R_{.3}$</td>
+		<td style="border: 1px solid #ccc;">  $R_{.4}$</td>
+  	  </tr>
     </tbody>
   </table>
 </div>
