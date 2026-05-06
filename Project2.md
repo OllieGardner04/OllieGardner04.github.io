@@ -488,7 +488,8 @@ U_{1} &= Q_{1.} \\
 V_{1} &= P_{1.} \\
 T_{i} &= R_{i.} + T_{i-1} - R_{.i} \\
 U_{i} &= Q_{i.} + U_{i-1} - Q_{.i} \\
-V_{i} &= P_{i.} + V_{i-1} - P_{.i} \\
+V_{i} &= P_{i.} + V_{i-1} - P_{.i}
+\end{aligned}
 {:/}$$
 
 Visually, these repesent the sums of all points within "rectangles" with a bottom left corner on the main diagonal.
@@ -713,8 +714,8 @@ And
 
 $${::nomarkdown}
 \begin{aligned}
-\hat{r}_{i} &= \frac{R_{i.}W_{i}R_{i+1.}}{N_{i}R_{i+1.}Z_{i} - R_{i.}N_{i+1}(Z_{i} - W_{i}} \\
-\hat{r}'_{i} &= \frac{Q_{ii}R_{i+1.}}{R_{i+1.}M_{i} - N_{i+1}(Q_{i.} - Q_{ii}} \\
+\hat{r}_{i} &= \frac{R_{i.}W_{i}R_{i+1.}}{N_{i}R_{i+1.}Z_{i} - R_{i.}N_{i+1}(Z_{i} - W_{i})} \\
+\hat{r}'_{i} &= \frac{Q_{ii}R_{i+1.}}{R_{i+1.}M_{i} - N_{i+1}(Q_{i.} - Q_{ii})} \\
 \hat{r}''_{i} &= \frac{P_{ii}Q_{i.} - P_{i.}Q_{ii}}{L_{i}(Q_{i.} - Q_{ii}) - M_{i}(P_{i.} - P_{ii})}
 \end{aligned}
 {:/}$$
