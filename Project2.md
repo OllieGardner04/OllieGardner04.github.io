@@ -71,9 +71,9 @@ For example, R<sub>24</sub> is the number of birds that were ringed in year 2 an
 
 ## Age-stratified data
 
-As birds may survive at different rates at different ages, birds can be recorded as being ringed as an adult, juvenile, or pullus. In this research, a an adult is defined as being a bird older than 1 year of age, a juvenile is defined as being a bird less than 1 year old that has left the nest, and pullus is defined as being a bird still in the nest. By ringing birds as pulli, we can record whether they have died in the so called post-fledging period; this is the stage of life during which the bird has left the nest but is not yet independent of its parents. Birds are often highly vulnerable during this period. 
+As birds may survive at different rates at different ages, birds can be recorded as being ringed as an adult, juvenile, or pullus. In this research, a an adult is defined as being a bird older than 1 year of age, a juvenile is defined as being a bird less than 1 year old that has left the nest, and pullus is defined as being a bird still in the nest. By ringing birds as pulli, we can record whether they have died in the post-fledging period; this is the stage of life during which the bird has left the nest but is not yet independent of its parents. Birds are often highly vulnerable during this period. 
 
-The 2 models discussed in this research estimate survival and recovery rates during the post-fledging period for pulli recovery data including recoveries during the post-fledging period and after it separately, and data including these 2 values combined.
+The 2 models discussed in this research estimate survival and reported expolitation rates during the post-fledging period, the juvenile period, and all subsequent years. The first model discussed uses data containing recoveries in the post-fledging period and juvenile period separately. The second model uses data where these counts are combined. So that all parameters are identifiable, I use the Brownie parameterisation.
 
 For both models, adult and juvenile data is the same, and is formatted as follows.
 
@@ -261,6 +261,8 @@ The first cell in each row is the number of birds from cohort <i>i</i> recovered
 ### The model
 
 The data is modelled as coming from a multinomial distribution. I assign one set of parameters for each year of an adults life, a separate set for the first year of life for birds ringed as juveniles, and a separate set for the post-fledging period for birds ringed as pulli.
+
+$S_{i}$ is the survival rate in the $i$th year of the study. $f_{i} = (1-S_{i})r_{i}$ is the probability of dying and being recovered and reported. 
 
 Under this model, the expected number of recoveries in each cell is given by
 
@@ -481,6 +483,20 @@ Let
 
 $${::nomarkdown}
 \begin{aligned}
+T_{1} &= R_{1.} \\
+U_{1} &= Q_{1.} \\
+V_{1} &= P_{1.} \\
+T_{i} &= R_{i.} + T_{i-1} - R_{.i} \\
+U_{i} &= Q_{i.} + U_{i-1} - Q_{.i} \\
+V_{i} &= P_{i.} + V_{i-1} - P_{.i} \\
+{:/}$$
+
+Visually, these repesent the sums of all points within "rectangles" with a bottom left corner on the main diagonal.
+
+Let
+
+$${::nomarkdown}
+\begin{aligned}
 Z_{i} &= T_{i} + U_{i} - Q_{i.} + V_{i} - P_{i.} \\
 W_{i} &= R_{.i} + Q_{.i} - Q_{ii} + P_{.i} - P_{ii} - P_{i(i+1)} \\
 C_{i} &= Q_{i.} + P_{i.} - P_{ii} \\
@@ -498,6 +514,22 @@ $${::nomarkdown}
 \hat{f}'_{i} &= \frac{Q_{i.}}{M_{i}}\frac{D_{i}}{C_{i}} \\
 \hat{S}''_{i} &= \frac{M_{i}}{L_{i}}\frac{P_{i.} - P_{ii}}{Q_{i.}} \\
 \hat{f}''_{i} &= \frac{P_{ii}}{L_{i}}
+\end{aligned}
+{:/}$$
+
+Recovery rate MLEs are given By
+
+$${::nomarkdown}
+\hat{r}^{\text{(age)}}_{i} = \frac{\hat{f}^{\text{(age)}}_{i}}{1-\hat{S}^{\text{(age)}}_{i}}
+{:/}$$
+
+So
+
+$${::nomarkdown}
+\begin{aligned}
+\hat{r}_{i} &= \frac{R_{i.}W_{i}R_{i+1.}}{N_{i}R_{i+1.}Z_{i} - R_{i.}N_{i+1}(Z_{i} - W_{i}} \\
+\hat{r}'_{i} &= \frac{Q_{i.}D_{i}R_{i+1.}}{M_{i}R_{i+1.}C_{i} - Q_{i.}N_{i+1}(C_{i} - D_{i}} \\
+\hat{r}''_{i} &= \frac{P_{ii}Q_{i.}}{L_{i}Q_{i.} - M_{i}(P_{i.} - P_{ii}}
 \end{aligned}
 {:/}$$
 
@@ -668,12 +700,22 @@ Then maximising the likelihood yields
 
 $${::nomarkdown}
 \begin{aligned}
-\hat{f}''_{i} &= \frac{P_{ii}Q_{i.} - P_{i.}Q_{ii}}{L_{i}(Q_{i.} - Q_{ii})} \\
-\hat{S}''_{i} &= \frac{M_{i}}{L_{i}} \frac{P_{i.} - P_{ii}}{Q_{i.} - Q_{ii}} \\
-\hat{f}'_{i}  &= \frac{Q_{ii}}{M_{i}} \\
-\hat{S}'_{i}  &= \frac{N_{i+1}}{R_{i+1.}}\frac{Q_{i.} - Q_{ii}}{M_{i}} \\
-\hat{f}_{i}   &= \frac{R_{i.}}{N_{i}}\frac{W_{i}}{Z_{i}} \\
 \hat{S}_{i}   &= \frac{R_{i.}N_{i+1}}{N_{i}R_{i+1.}}\frac{Z_{i} - W_{i}}{Z_{i}}
+\hat{f}_{i}   &= \frac{R_{i.}}{N_{i}}\frac{W_{i}}{Z_{i}} \\
+\hat{S}'_{i}  &= \frac{N_{i+1}}{R_{i+1.}}\frac{Q_{i.} - Q_{ii}}{M_{i}} \\
+\hat{f}'_{i}  &= \frac{Q_{ii}}{M_{i}} \\
+\hat{S}''_{i} &= \frac{M_{i}}{L_{i}} \frac{P_{i.} - P_{ii}}{Q_{i.} - Q_{ii}} \\
+\hat{f}''_{i} &= \frac{P_{ii}Q_{i.} - P_{i.}Q_{ii}}{L_{i}(Q_{i.} - Q_{ii})} \\
+\end{aligned}
+{:/}$$
+
+And
+
+$${::nomarkdown}
+\begin{aligned}
+\hat{r}_{i} &= \frac{R_{i.}W_{i}R_{i+1.}}{N_{i}R_{i+1.}Z_{i} - R_{i.}N_{i+1}(Z_{i} - W_{i}} \\
+\hat{r}'_{i} &= \frac{Q_{ii}R_{i+1.}}{R_{i+1.}M_{i} - N_{i+1}(Q_{i.} - Q_{ii}} \\
+\hat{r}''_{i} &= \frac{P_{ii}Q_{i.} - P_{i.}Q_{ii}}{L_{i}(Q_{i.} - Q_{ii}) - M_{i}(P_{i.} - P_{ii})}
 \end{aligned}
 {:/}$$
 
