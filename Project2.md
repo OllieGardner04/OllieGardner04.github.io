@@ -12,6 +12,7 @@ This research was inspired by a group project in my third year, in which we esti
 I have not yet commented on the results of the Bayesian estimation.
 
 SEBER GLM COMING SOON!!!
+SEBER GLM COMPLETE!!! Will be added to page soon.
 
 ## Background and introduction
 
@@ -440,6 +441,182 @@ Under this model, the expected number of recoveries in each cell of ecah table i
     </tbody>
   </table>
 </div>
+
+Under the Seber parameterisation, this is
+
+<div style="text-align: center; margin: 1em 0;">
+  <table style="margin: 0 auto; border-collapse: collapse; width: auto;">
+    <thead>
+      <tr>
+        <th colspan="6">Expected recovery counts of birds ringed as adults</th>
+      </tr>
+      <tr>
+        <th style="border: 1px solid #ccc; padding: 6px 12px;" rowspan="3">$\text{Year marked}$</th>
+        <th style="border: 1px solid #ccc; padding: 6px 12px;" rowspan="3">$\text{Number marked}$</th>
+        <th style="border: 1px solid #ccc; padding: 6px 12px;" colspan="4">$\text{Year recovered}$</th>
+      </tr>
+      <tr>
+        <th style="border: 1px solid #ccc; padding: 6px 12px;">$1$</th>
+        <th style="border: 1px solid #ccc; padding: 6px 12px;">$2$</th>
+        <th style="border: 1px solid #ccc; padding: 6px 12px;">$3$</th>
+        <th style="border: 1px solid #ccc; padding: 6px 12px;">$4$</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="border: 1px solid #ccc;">  $1$</td>
+        <td style="border: 1px solid #ccc;">  $N_{1}$</td>
+        <td style="border: 1px solid #ccc;">  $N_{1} (1 - S_{1})r_{1}$</td>
+        <td style="border: 1px solid #ccc;">  $N_{1}S_{1} (1 - S_{2})r_{2}$</td>
+        <td style="border: 1px solid #ccc;">  $N_{1}S_{1}S_{2} (1 - S_{3})r_{3}$</td>
+        <td style="border: 1px solid #ccc;">  $N_{1}S_{1}S_{2}S_{3} (1 - S_{4})r_{4}$</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ccc;">  $2$</td>
+        <td style="border: 1px solid #ccc;">  $N_{2}$</td>
+        <td style="border: 1px solid #ccc;">  </td>
+        <td style="border: 1px solid #ccc;">  $N_{2} (1 - S_{2})r_{2}$</td>
+        <td style="border: 1px solid #ccc;">  $N_{2}S_{2} (1 - S_{3})r_{3}$</td>
+        <td style="border: 1px solid #ccc;">  $N_{2}S_{2}S_{3} (1 - S_{4})r_{4}$</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ccc;">  $3$</td>
+        <td style="border: 1px solid #ccc;">  $N_{3}$</td>
+        <td style="border: 1px solid #ccc;">  </td>
+        <td style="border: 1px solid #ccc;">  </td>
+        <td style="border: 1px solid #ccc;">  $N_{3} (1 - S_{3})r_{3}$</td>
+        <td style="border: 1px solid #ccc;">  $N_{3}S_{3} (1 - S_{4})r_{4}$</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ccc;">  $4$</td>
+        <td style="border: 1px solid #ccc;">  $N_{4}$</td>
+        <td style="border: 1px solid #ccc;">  </td>
+        <td style="border: 1px solid #ccc;">  </td>
+        <td style="border: 1px solid #ccc;">  </td>
+        <td style="border: 1px solid #ccc;">  $N_{4} (1 - S_{4})r_{4}$</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div style="text-align: center; margin: 1em 0;">
+  <table style="margin: 0 auto; border-collapse: collapse; width: auto;">
+    <thead>
+      <tr>
+        <th colspan="6">Expected recovery counts of birds ringed as juveniles</th>
+      </tr>
+      <tr>
+        <th style="border: 1px solid #ccc; padding: 6px 12px;" rowspan="3">$\text{Year marked}$</th>
+        <th style="border: 1px solid #ccc; padding: 6px 12px;" rowspan="3">$\text{Number marked}$</th>
+        <th style="border: 1px solid #ccc; padding: 6px 12px;" colspan="4">$\text{Year recovered}$</th>
+      </tr>
+      <tr>
+        <th style="border: 1px solid #ccc; padding: 6px 12px;">$1$</th>
+        <th style="border: 1px solid #ccc; padding: 6px 12px;">$2$</th>
+        <th style="border: 1px solid #ccc; padding: 6px 12px;">$3$</th>
+        <th style="border: 1px solid #ccc; padding: 6px 12px;">$4$</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="border: 1px solid #ccc;">  $1$</td>
+        <td style="border: 1px solid #ccc;">  $M_{1}$</td>
+        <td style="border: 1px solid #ccc;">  $M_{1}(1 - S_{1}')r_{1}' $</td>
+        <td style="border: 1px solid #ccc;">  $M_{1}S_{1}' (1 - S_{2})r_{2}$</td>
+        <td style="border: 1px solid #ccc;">  $M_{1}S_{1}' S_{2} (1 - S_{3})r_{3}$</td>
+        <td style="border: 1px solid #ccc;">  $M_{1}S_{1}' S_{2}S_{3} (1 - S_{4})r_{4}$</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ccc;">  $2$</td>
+        <td style="border: 1px solid #ccc;">  $M_{2}$</td>
+        <td style="border: 1px solid #ccc;">  </td>
+        <td style="border: 1px solid #ccc;">  $M_{2} (1 - S_{2}')r_{2}' $</td>
+        <td style="border: 1px solid #ccc;">  $M_{2}S_{2}' (1 - S_{3})r_{3}$</td>
+        <td style="border: 1px solid #ccc;">  $M_{2}S_{2}' S_{3} (1 - S_{4})r_{4}$</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ccc;">  $3$</td>
+        <td style="border: 1px solid #ccc;">  $M_{3}$</td>
+        <td style="border: 1px solid #ccc;">  </td>
+        <td style="border: 1px solid #ccc;">  </td>
+        <td style="border: 1px solid #ccc;">  $M_{3} (1 - S_{3}')r_{3}' $</td>
+        <td style="border: 1px solid #ccc;">  $M_{3}S_{3}' (1 - S_{4})r_{4}$</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ccc;">  $4$</td>
+        <td style="border: 1px solid #ccc;">  $M_{4}$</td>
+        <td style="border: 1px solid #ccc;">  </td>
+        <td style="border: 1px solid #ccc;">  </td>
+        <td style="border: 1px solid #ccc;">  </td>
+        <td style="border: 1px solid #ccc;">  $M_{4} (1 - S_{4}')r_{4}' $</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div style="text-align: center; margin: 1em 0;">
+  <table style="margin: 0 auto; border-collapse: collapse; width: auto;">
+    <thead>
+      <tr>
+        <th colspan="7">Expected recovery counts of birds ringed as pulli</th>
+      </tr>
+      <tr>
+        <th style="border: 1px solid #ccc; padding: 6px 12px;" rowspan="3">$\text{Year marked}$</th>
+        <th style="border: 1px solid #ccc; padding: 6px 12px;" rowspan="3">$\text{Number marked}$</th>
+        <th style="border: 1px solid #ccc; padding: 6px 12px;" colspan="5">$\text{Year recovered}$</th>
+      </tr>
+      <tr>
+	<th style="border: 1px solid #ccc; padding: 6px 12px;" colspan="2">$1$</th>
+	<th style="border: 1px solid #ccc; padding: 6px 12px;" rowspan="2">$2$</th>
+	<th style="border: 1px solid #ccc; padding: 6px 12px;" rowspan="2">$3$</th>
+	<th style="border: 1px solid #ccc; padding: 6px 12px;" rowspan="2">$4$</th>
+      </tr>
+      <tr>
+        <th style="border: 1px solid #ccc; padding: 6px 12px;">$\text{PF}$</th>
+        <th style="border: 1px solid #ccc; padding: 6px 12px;">$\text{Juv.}$</th>	
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="border: 1px solid #ccc;">  $1$</td>
+        <td style="border: 1px solid #ccc;">  $L_{1}$</td>
+        <td style="border: 1px solid #ccc;">  $L_{1}(1 - S_{1}'' )r_{1}'' $</td>
+        <td style="border: 1px solid #ccc;">  $L_{1}S_{1}'' (1 - S_{1}')r_{1}' $</td>
+        <td style="border: 1px solid #ccc;">  $L_{1}S_{1}'' S_{1}' (1 - S_{2})r_{2}$</td>
+        <td style="border: 1px solid #ccc;">  $L_{1}S_{1}'' S_{1}' S_{2} (1 - S_{3})r_{3}$</td>
+        <td style="border: 1px solid #ccc;">  $L_{1}S_{1}'' S_{1}' S_{2}S_{3} (1 - S_{4})r_{4}$</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ccc;">  $2$</td>
+        <td style="border: 1px solid #ccc;">  $L_{2}$</td>
+        <td style="border: 1px solid #ccc;">  </td>
+        <td style="border: 1px solid #ccc;">  $L_{2}(1 - S_{2}'' )r_{2}'' $</td>
+        <td style="border: 1px solid #ccc;">  $L_{2}S_{2}'' (1 - S_{2}')r_{2}' $</td>
+        <td style="border: 1px solid #ccc;">  $L_{2}S_{2}'' S_{2}' (1 - S_{3})r_{3}$</td>
+        <td style="border: 1px solid #ccc;">  $L_{2}S_{2}'' S_{2}' S_{3}(1 - S_{4})r_{4}$</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ccc;">  $3$</td>
+        <td style="border: 1px solid #ccc;">  $L_{3}$</td>
+        <td style="border: 1px solid #ccc;">  </td>
+        <td style="border: 1px solid #ccc;">  </td>
+        <td style="border: 1px solid #ccc;">  $L_{3}(1 - S_{3}'' )r_{3}'' $</td>
+        <td style="border: 1px solid #ccc;">  $L_{3}S_{3}'' (1 - S_{3}')r_{3}' $</td>
+        <td style="border: 1px solid #ccc;">  $L_{3}S_{3}'' S_{3}' (1 - S_{4})r_{4}$</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ccc;">  $4$</td>
+        <td style="border: 1px solid #ccc;">  $L_{4}$</td>
+        <td style="border: 1px solid #ccc;">  </td>
+        <td style="border: 1px solid #ccc;">  </td>
+        <td style="border: 1px solid #ccc;">  </td>
+        <td style="border: 1px solid #ccc;">  $L_{4}(1 - S_{4}'' )r_{4}'' $</td>
+        <td style="border: 1px solid #ccc;">  $L_{4}S_{4}'' (1 - S_{4}')r_{4}' $</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
 
 ### The likelihood
 
