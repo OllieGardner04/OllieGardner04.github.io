@@ -11,6 +11,8 @@ This research was inspired by a group project in my third year, in which we esti
 
 I have not yet commented on the results of the Bayesian estimation.
 
+SEBER GLM COMING SOON!!!
+
 ## Background and introduction
 
 Bird ringing is a method to track birds; a small ring is attached to their legs that can be used to uniquely identify them. If the bird dies and is found by someone and they report the death to the ringing scheme, then the ringers know that that bird has died. In a bird ringing scheme, a cohort of birds are ringed each year, and deaths in subsequent years from each cohort are recorded. This results in a dataset that looks like the table below
@@ -67,13 +69,13 @@ Bird ringing is a method to track birds; a small ring is attached to their legs 
   </table>
 </div>
 
-For example, R<sub>24</sub> is the number of birds that were ringed in year 2 and recovered in year 4.
+For example, $R_{24}$ is the number of birds that were ringed in year 2 and recovered in year 4.
 
 ## Age-stratified data
 
 As birds may survive at different rates at different ages, birds can be recorded as being ringed as an adult, juvenile, or pullus. In this research, a an adult is defined as being a bird older than 1 year of age, a juvenile is defined as being a bird less than 1 year old that has left the nest, and pullus is defined as being a bird still in the nest. By ringing birds as pulli, we can record whether they have died in the post-fledging period; this is the stage of life during which the bird has left the nest but is not yet independent of its parents. Birds are often highly vulnerable during this period. 
 
-The 2 models discussed in this research estimate survival and reported expolitation rates during the post-fledging period, the juvenile period, and all subsequent years. The first model discussed uses data containing recoveries in the post-fledging period and juvenile period separately. The second model uses data where these counts are combined. So that all parameters are identifiable, I use the Brownie parameterisation.
+The 2 models discussed in this research estimate survival and reported expolitation rates during the post-fledging period, the juvenile period, and all subsequent years. The first model discussed uses data containing recoveries in the post-fledging period and juvenile period separately. The second model uses data where these counts are combined.
 
 For both models, adult and juvenile data is the same, and is formatted as follows.
 
@@ -256,15 +258,15 @@ In the case where post-fledging recoveries are recorded separately to juvenile r
   </table>
 </div>
 
-The first cell in each row is the number of birds from cohort <i>i</i> recovered in their post-fledging period; the second is the number of birds from cohort <i>i</i> recovered in their first year after their post-fledging period.
+The first cell in each row is the number of birds from cohort $i$ recovered in their post-fledging period; the second cell in each row is the number of birds from cohort $i$ recovered in their first year after their post-fledging period.
 
 ### The model
 
+Initially, I consider a likelihood based approach. So that all parameters are identifiable, I use the Brownie parameterisation. Under this parameterisation, we estimate $S$, the surival rate and $f$, the harvest rate, also called the reported expolitation rate. $f$ is defined as $(1-S)r$, the probability of not surviving <i>and</i> being recovered and reported. I allow these parameters to vary over time, so that $S_{i}$ is the survival rate in the $i$th year of the study, and $f_{i} = (1-S_{i})r_{i}$ is the probability of dying and being recovered and reported in the $i$th year.
+
 The data is modelled as coming from a multinomial distribution. I assign one set of parameters for each year of an adults life, a separate set for the first year of life for birds ringed as juveniles, and a separate set for the post-fledging period for birds ringed as pulli.
 
-$S_{i}$ is the survival rate in the $i$th year of the study. $f_{i} = (1-S_{i})r_{i}$ is the probability of dying and being recovered and reported. 
-
-Under this model, the expected number of recoveries in each cell is given by
+Under this model, the expected number of recoveries in each cell of ecah table is given by
 
 <div style="text-align: center; margin: 1em 0;">
   <table style="margin: 0 auto; border-collapse: collapse; width: auto;">
@@ -492,9 +494,11 @@ V_{i} &= P_{i.} + V_{i-1} - P_{.i}
 \end{aligned}
 {:/}$$
 
+where $R_{i.}$ and $R_{.i}$ are row and column sums of observed adult recoveries respectively. $Q_{i.}$, $Q_{.i}$, $P_{i.}$, and $P_{.i}$ are defined the same for their respective tables.
+
 Visually, these represent the sums of all points within "rectangles" with a bottom left corner on the main diagonal. 
 
-Below is the observed counts of recovered adults, with $T_{2}$ highlighted.
+Below is an example of observed counts of recovered adults, with $T_{2}$ highlighted.
 
 <div style="text-align: center; margin: 1em 0;">
   <table style="margin: 0 auto; border-collapse: collapse; width: auto;">
@@ -598,9 +602,9 @@ So
 
 $${::nomarkdown}
 \begin{aligned}
-\hat{r}_{i} &= \frac{R_{i.}W_{i}R_{i+1.}}{N_{i}R_{i+1.}Z_{i} - R_{i.}N_{i+1}(Z_{i} - W_{i}} \\
-\hat{r}'_{i} &= \frac{Q_{i.}D_{i}R_{i+1.}}{M_{i}R_{i+1.}C_{i} - Q_{i.}N_{i+1}(C_{i} - D_{i}} \\
-\hat{r}''_{i} &= \frac{P_{ii}Q_{i.}}{L_{i}Q_{i.} - M_{i}(P_{i.} - P_{ii}}
+\hat{r}_{i} &= \frac{R_{i.}W_{i}R_{i+1.}}{N_{i}R_{i+1.}Z_{i} - R_{i.}N_{i+1}(Z_{i} - W_{i})} \\
+\hat{r}'_{i} &= \frac{Q_{i.}D_{i}R_{i+1.}}{M_{i}R_{i+1.}C_{i} - Q_{i.}N_{i+1}(C_{i} - D_{i})} \\
+\hat{r}''_{i} &= \frac{P_{ii}Q_{i.}}{L_{i}Q_{i.} - M_{i}(P_{i.} - P_{ii})}
 \end{aligned}
 {:/}$$
 
@@ -685,6 +689,8 @@ The first cell in each row is the number of birds from cohort $i$ recovered in t
 
 ### The model
 
+We again use the Brownie parameterisation. 
+
 Under the combined post-fledging model, adults and juveniles are modelled identically as above, but the expected counts of pullus recoveries are given by the table below
 
 <div style="text-align: center; margin: 1em 0;">
@@ -742,6 +748,8 @@ Under the combined post-fledging model, adults and juveniles are modelled identi
   </table>
 </div>
 
+The explanation for this is that, given a bird has been ringed as a pullus, the probability of it being recovered in the first year is the joint probability of it dying and being recovered during the post-fledging period + the probability of it surviving the post-fledging stage and then dying and being recovered as a juvnile.
+
 ### The likelihood
 
 This model gives the row-wise likelihoods
@@ -771,7 +779,7 @@ Then maximising the likelihood yields
 
 $${::nomarkdown}
 \begin{aligned}
-\hat{S}_{i}   &= \frac{R_{i.}N_{i+1}}{N_{i}R_{i+1.}}\frac{Z_{i} - W_{i}}{Z_{i}}
+\hat{S}_{i}   &= \frac{R_{i.}N_{i+1}}{N_{i}R_{i+1.}}\frac{Z_{i} - W_{i}}{Z_{i}} \\
 \hat{f}_{i}   &= \frac{R_{i.}}{N_{i}}\frac{W_{i}}{Z_{i}} \\
 \hat{S}'_{i}  &= \frac{N_{i+1}}{R_{i+1.}}\frac{Q_{i.} - Q_{ii}}{M_{i}} \\
 \hat{f}'_{i}  &= \frac{Q_{ii}}{M_{i}} \\
@@ -785,7 +793,7 @@ And
 $${::nomarkdown}
 \begin{aligned}
 \hat{r}_{i} &= \frac{R_{i.}W_{i}R_{i+1.}}{N_{i}R_{i+1.}Z_{i} - R_{i.}N_{i+1}(Z_{i} - W_{i})} \\
-\hat{r}'_{i} &= \frac{Q_{ii}R_{i+1.}}{R_{i+1.}M_{i} - N_{i+1}(Q_{i.} - Q_{ii})} \\
+\hat{r}'_{i} &= \frac{Q_{ii}R_{i+1.}}{M_{i}R_{i+1.} - N_{i+1}(Q_{i.} - Q_{ii})} \\
 \hat{r}''_{i} &= \frac{P_{ii}Q_{i.} - P_{i.}Q_{ii}}{L_{i}(Q_{i.} - Q_{ii}) - M_{i}(P_{i.} - P_{ii})}
 \end{aligned}
 {:/}$$
@@ -805,7 +813,7 @@ $${::nomarkdown}
 \end{aligned}
 {:/}$$
 
-As previously stated, there is no benefit to using this model, as the date of recovery is always recorded, meaning we are never in the scenario where we only have access to combined post-fledging and juvenile recoveries. It is presented to demonstrate my ability to research current models and develop them.
+As previously stated, there is no benefit to using this model, as the date of recovery is always recorded, meaning we are never in the scenario where we only have access to combined post-fledging and juvenile recoveries. It is presented to demonstrate my ability to research current models, develop them, and criticise them.
 
 ## An example
 
@@ -1019,7 +1027,7 @@ The following plots show the estimates and 95% confidence intervals for both mod
   </div>
 </div>
 
-Clearly the models produce very similar estimates for adults. We see a general decline in reported exploitation rates for adult blackbirds over time, reflecting trends in reporting behaviour (https://www.researchgate.net/publication/254310554_Declining_rates_of_ring_recovery_in_British_birds). Survival rates fluctuate around 70%.
+Clearly the models produce very similar estimates for adults. We see a general decline in reported exploitation rates for adult blackbirds over time and a fluctuating survival rate. By the definition of $f$, this suggests that the reporting rate decreased over the time of the study, reflecting trends in reporting behaviour (<a>https://www.researchgate.net/publication/254310554_Declining_rates_of_ring_recovery_in_British_birds</a>). Survival rates fluctuate around 70%.
 
 <div style="text-align: center;">
   <div class = "row">
@@ -1028,7 +1036,7 @@ Clearly the models produce very similar estimates for adults. We see a general d
   </div>
 </div>
 
-Similarly for juveniles, the values are very similar between models. We also see a decline in reported exploitation rates of juveniles. Survival rates appear to increase over the duration of the study, from around 50% to 75%. 
+Similarly for juveniles, the values are very similar between models. We see a decline in reported exploitation rates of juveniles up until the middle of the survey, where it increases; this is likely because the estimated survival rate, decreased, meaning $(1 - S)$ increased, and therefore $f$. It is reasonable to suggest that reporting rates decreased over the time of this study. Survival rates appear to fluctuate over the duration of the study, but increase from around 50% to 75%.
 
 <div style="text-align: center;">
   <div class = "row">
@@ -1045,7 +1053,7 @@ Post-fledging estimates exhibit the greatest difference between models. As expec
 
 ### Bayesian modelling
 
-While estimating parameters using a GLM is standard and is computationally cheap, it does not allow us to incorporate any prior beliefs about the system we are modelling. For this section, I will only consider the model with separate counts for the post-fledging period, as it is more informative. I present results from 2 random-walk models. These models use the same underlying multinomial framework, except they estimate $S$ and $r$, from which $f$ is estimated.
+While estimating parameters using a GLM is standard and is computationally cheap, it does not allow us to incorporate any prior beliefs about the system we are modelling. Additionally, priors allow us to estimate the final $S$ and $r$ parameters, despite them being more influenced by the priors than other parameters. For this section, I will only consider the model with separate counts for the post-fledging period, as it is more informative. I present results from 2 random-walk models. These models use the same underlying multinomial framework, except they estimate $S$ and $r$, from which $f$ is estimated.
 
 #### RW1
 
