@@ -9,10 +9,7 @@ markdown: kramdown
 
 This research was inspired by a group project in my third year, in which we estimated the survival and recovery rates of blackbirds and sandwich terns from a BTO dead recovery dataset. We had access to ring recovery data, and used multinomial models to estimate the rates. At the start of the project, I misinterpreted the data I had collected, and ended up creating my own model that, while valid, produced incorrect results. After the project, I found the correct data, and fit a more appropriate model. There is no benefit to fitting the initial model, but I present it as it's interesting. This page compares both models and contains the ongoing results of my research into this data.
 
-I have not yet commented on the results of the Bayesian estimation.
-
-SEBER GLM COMING SOON!!!
-SEBER GLM COMPLETE!!! Will be added to page soon.
+I have not yet commented on the results of the Bayesian estimation or assessed goodness of fit.
 
 ## Background and introduction
 
@@ -263,11 +260,13 @@ The first cell in each row is the number of birds from cohort $i$ recovered in t
 
 ### The model
 
-Initially, I consider a likelihood based approach. So that all parameters are identifiable, I use the Brownie parameterisation. Under this parameterisation, we estimate $S$, the surival rate and $f$, the harvest rate, also called the reported expolitation rate. $f$ is defined as $(1-S)r$, the probability of not surviving <i>and</i> being recovered and reported. I allow these parameters to vary over time, so that $S_{i}$ is the survival rate in the $i$th year of the study, and $f_{i} = (1-S_{i})r_{i}$ is the probability of dying and being recovered and reported in the $i$th year.
+Initially, I consider a likelihood based approach. Under the Brownie parameterisation, we estimate $S$, the surival rate and $f$, the harvest rate, also called the reported expolitation rate. $f$ is defined as $(1-S)r$, the probability of not surviving <i>and</i> being recovered and reported. I allow these parameters to vary over time, so that $S_{i}$ is the survival rate in the $i$th year of the study, and $f_{i} = (1-S_{i})r_{i}$ is the probability of dying and being recovered and reported in the $i$th year.
+
+Under the Seber parameteristaion, we estimate $S$ and $r$. I primarily present the Brownie parameterisation, as deriving the MLEs is simpler this way. I present results from both parameterisations.
 
 The data is modelled as coming from a multinomial distribution. I assign one set of parameters for each year of an adults life, a separate set for the first year of life for birds ringed as juveniles, and a separate set for the post-fledging period for birds ringed as pulli.
 
-Under this model, the expected number of recoveries in each cell of ecah table is given by
+Under this model, the expected number of recoveries in each cell of each table is given by
 
 <div style="text-align: center; margin: 1em 0;">
   <table style="margin: 0 auto; border-collapse: collapse; width: auto;">
@@ -442,7 +441,10 @@ Under this model, the expected number of recoveries in each cell of ecah table i
   </table>
 </div>
 
-Under the Seber parameterisation, this is
+Details on how I use the Seber parameterisation are below
+
+<details>
+<summary>Seber parameterisation</summary>
 
 <div style="text-align: center; margin: 1em 0;">
   <table style="margin: 0 auto; border-collapse: collapse; width: auto;">
@@ -593,7 +595,7 @@ Under the Seber parameterisation, this is
         <td style="border: 1px solid #ccc;">  $L_{2}(1 - S_{2}'' )r_{2}'' $</td>
         <td style="border: 1px solid #ccc;">  $L_{2}S_{2}'' (1 - S_{2}')r_{2}' $</td>
         <td style="border: 1px solid #ccc;">  $L_{2}S_{2}'' S_{2}' (1 - S_{3})r_{3}$</td>
-        <td style="border: 1px solid #ccc;">  $L_{2}S_{2}'' S_{2}' S_{3}(1 - S_{4})r_{4}$</td>
+        <td style="border: 1px solid #ccc;">  $L_{2}S_{2}'' S_{2}' S_{3} (1 - S_{4})r_{4}$</td>
       </tr>
       <tr>
         <td style="border: 1px solid #ccc;">  $3$</td>
@@ -617,6 +619,182 @@ Under the Seber parameterisation, this is
   </table>
 </div>
 
+Notice that $(1 - S_{4})r_{4}$ and $(1 - S_{4}')r_{4}'$ only appear as a product, thus making $S_{4}$, $r_{4}$, $S_{4}'$, and $r_{4}'$ unidentifiable. $S_{4}''$ appears in 2 separate places, meaning that it <i>is</i> identifiable. This means that $r_{4}''$ is also identifiable. To deal with the parameters taht can't be identified, I use the Brownie parameterisation for these parameters. Therefore, the tables become
+
+<div style="text-align: center; margin: 1em 0;">
+  <table style="margin: 0 auto; border-collapse: collapse; width: auto;">
+    <thead>
+      <tr>
+        <th colspan="6">Expected recovery counts of birds ringed as adults</th>
+      </tr>
+      <tr>
+        <th style="border: 1px solid #ccc; padding: 6px 12px;" rowspan="3">$\text{Year marked}$</th>
+        <th style="border: 1px solid #ccc; padding: 6px 12px;" rowspan="3">$\text{Number marked}$</th>
+        <th style="border: 1px solid #ccc; padding: 6px 12px;" colspan="4">$\text{Year recovered}$</th>
+      </tr>
+      <tr>
+        <th style="border: 1px solid #ccc; padding: 6px 12px;">$1$</th>
+        <th style="border: 1px solid #ccc; padding: 6px 12px;">$2$</th>
+        <th style="border: 1px solid #ccc; padding: 6px 12px;">$3$</th>
+        <th style="border: 1px solid #ccc; padding: 6px 12px;">$4$</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="border: 1px solid #ccc;">  $1$</td>
+        <td style="border: 1px solid #ccc;">  $N_{1}$</td>
+        <td style="border: 1px solid #ccc;">  $N_{1} (1 - S_{1})r_{1}$</td>
+        <td style="border: 1px solid #ccc;">  $N_{1}S_{1} (1 - S_{2})r_{2}$</td>
+        <td style="border: 1px solid #ccc;">  $N_{1}S_{1}S_{2} (1 - S_{3})r_{3}$</td>
+        <td style="border: 1px solid #ccc;">  $N_{1}S_{1}S_{2}S_{3} f_{4}$</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ccc;">  $2$</td>
+        <td style="border: 1px solid #ccc;">  $N_{2}$</td>
+        <td style="border: 1px solid #ccc;">  </td>
+        <td style="border: 1px solid #ccc;">  $N_{2} (1 - S_{2})r_{2}$</td>
+        <td style="border: 1px solid #ccc;">  $N_{2}S_{2} (1 - S_{3})r_{3}$</td>
+        <td style="border: 1px solid #ccc;">  $N_{2}S_{2}S_{3} f_{4}$</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ccc;">  $3$</td>
+        <td style="border: 1px solid #ccc;">  $N_{3}$</td>
+        <td style="border: 1px solid #ccc;">  </td>
+        <td style="border: 1px solid #ccc;">  </td>
+        <td style="border: 1px solid #ccc;">  $N_{3} (1 - S_{3})r_{3}$</td>
+        <td style="border: 1px solid #ccc;">  $N_{3}S_{3} f_{4}$</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ccc;">  $4$</td>
+        <td style="border: 1px solid #ccc;">  $N_{4}$</td>
+        <td style="border: 1px solid #ccc;">  </td>
+        <td style="border: 1px solid #ccc;">  </td>
+        <td style="border: 1px solid #ccc;">  </td>
+        <td style="border: 1px solid #ccc;">  $N_{4} f_{4}$</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div style="text-align: center; margin: 1em 0;">
+  <table style="margin: 0 auto; border-collapse: collapse; width: auto;">
+    <thead>
+      <tr>
+        <th colspan="6">Expected recovery counts of birds ringed as juveniles</th>
+      </tr>
+      <tr>
+        <th style="border: 1px solid #ccc; padding: 6px 12px;" rowspan="3">$\text{Year marked}$</th>
+        <th style="border: 1px solid #ccc; padding: 6px 12px;" rowspan="3">$\text{Number marked}$</th>
+        <th style="border: 1px solid #ccc; padding: 6px 12px;" colspan="4">$\text{Year recovered}$</th>
+      </tr>
+      <tr>
+        <th style="border: 1px solid #ccc; padding: 6px 12px;">$1$</th>
+        <th style="border: 1px solid #ccc; padding: 6px 12px;">$2$</th>
+        <th style="border: 1px solid #ccc; padding: 6px 12px;">$3$</th>
+        <th style="border: 1px solid #ccc; padding: 6px 12px;">$4$</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="border: 1px solid #ccc;">  $1$</td>
+        <td style="border: 1px solid #ccc;">  $M_{1}$</td>
+        <td style="border: 1px solid #ccc;">  $M_{1}(1 - S_{1}')r_{1}' $</td>
+        <td style="border: 1px solid #ccc;">  $M_{1}S_{1}' (1 - S_{2})r_{2}$</td>
+        <td style="border: 1px solid #ccc;">  $M_{1}S_{1}' S_{2} (1 - S_{3})r_{3}$</td>
+        <td style="border: 1px solid #ccc;">  $M_{1}S_{1}' S_{2}S_{3} f_{4}$</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ccc;">  $2$</td>
+        <td style="border: 1px solid #ccc;">  $M_{2}$</td>
+        <td style="border: 1px solid #ccc;">  </td>
+        <td style="border: 1px solid #ccc;">  $M_{2} (1 - S_{2}')r_{2}' $</td>
+        <td style="border: 1px solid #ccc;">  $M_{2}S_{2}' (1 - S_{3})r_{3}$</td>
+        <td style="border: 1px solid #ccc;">  $M_{2}S_{2}' S_{3} f_{4}$</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ccc;">  $3$</td>
+        <td style="border: 1px solid #ccc;">  $M_{3}$</td>
+        <td style="border: 1px solid #ccc;">  </td>
+        <td style="border: 1px solid #ccc;">  </td>
+        <td style="border: 1px solid #ccc;">  $M_{3} (1 - S_{3}')r_{3}' $</td>
+        <td style="border: 1px solid #ccc;">  $M_{3}S_{3}' f_{4}$</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ccc;">  $4$</td>
+        <td style="border: 1px solid #ccc;">  $M_{4}$</td>
+        <td style="border: 1px solid #ccc;">  </td>
+        <td style="border: 1px solid #ccc;">  </td>
+        <td style="border: 1px solid #ccc;">  </td>
+        <td style="border: 1px solid #ccc;">  $M_{4} f_{4}' $</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div style="text-align: center; margin: 1em 0;">
+  <table style="margin: 0 auto; border-collapse: collapse; width: auto;">
+    <thead>
+      <tr>
+        <th colspan="7">Expected recovery counts of birds ringed as pulli</th>
+      </tr>
+      <tr>
+        <th style="border: 1px solid #ccc; padding: 6px 12px;" rowspan="3">$\text{Year marked}$</th>
+        <th style="border: 1px solid #ccc; padding: 6px 12px;" rowspan="3">$\text{Number marked}$</th>
+        <th style="border: 1px solid #ccc; padding: 6px 12px;" colspan="5">$\text{Year recovered}$</th>
+      </tr>
+      <tr>
+	<th style="border: 1px solid #ccc; padding: 6px 12px;" colspan="2">$1$</th>
+	<th style="border: 1px solid #ccc; padding: 6px 12px;" rowspan="2">$2$</th>
+	<th style="border: 1px solid #ccc; padding: 6px 12px;" rowspan="2">$3$</th>
+	<th style="border: 1px solid #ccc; padding: 6px 12px;" rowspan="2">$4$</th>
+      </tr>
+      <tr>
+        <th style="border: 1px solid #ccc; padding: 6px 12px;">$\text{PF}$</th>
+        <th style="border: 1px solid #ccc; padding: 6px 12px;">$\text{Juv.}$</th>	
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="border: 1px solid #ccc;">  $1$</td>
+        <td style="border: 1px solid #ccc;">  $L_{1}$</td>
+        <td style="border: 1px solid #ccc;">  $L_{1}(1 - S_{1}'' )r_{1}'' $</td>
+        <td style="border: 1px solid #ccc;">  $L_{1}S_{1}'' (1 - S_{1}')r_{1}' $</td>
+        <td style="border: 1px solid #ccc;">  $L_{1}S_{1}'' S_{1}' (1 - S_{2})r_{2}$</td>
+        <td style="border: 1px solid #ccc;">  $L_{1}S_{1}'' S_{1}' S_{2} (1 - S_{3})r_{3}$</td>
+        <td style="border: 1px solid #ccc;">  $L_{1}S_{1}'' S_{1}' S_{2}S_{3} f_{4}$</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ccc;">  $2$</td>
+        <td style="border: 1px solid #ccc;">  $L_{2}$</td>
+        <td style="border: 1px solid #ccc;">  </td>
+        <td style="border: 1px solid #ccc;">  $L_{2}(1 - S_{2}'' )r_{2}'' $</td>
+        <td style="border: 1px solid #ccc;">  $L_{2}S_{2}'' (1 - S_{2}')r_{2}' $</td>
+        <td style="border: 1px solid #ccc;">  $L_{2}S_{2}'' S_{2}' (1 - S_{3})r_{3}$</td>
+        <td style="border: 1px solid #ccc;">  $L_{2}S_{2}'' S_{2}' S_{3} f_{4}$</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ccc;">  $3$</td>
+        <td style="border: 1px solid #ccc;">  $L_{3}$</td>
+        <td style="border: 1px solid #ccc;">  </td>
+        <td style="border: 1px solid #ccc;">  </td>
+        <td style="border: 1px solid #ccc;">  $L_{3}(1 - S_{3}'' )r_{3}'' $</td>
+        <td style="border: 1px solid #ccc;">  $L_{3}S_{3}'' (1 - S_{3}')r_{3}' $</td>
+        <td style="border: 1px solid #ccc;">  $L_{3}S_{3}'' S_{3}' f_{4}$</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ccc;">  $4$</td>
+        <td style="border: 1px solid #ccc;">  $L_{4}$</td>
+        <td style="border: 1px solid #ccc;">  </td>
+        <td style="border: 1px solid #ccc;">  </td>
+        <td style="border: 1px solid #ccc;">  </td>
+        <td style="border: 1px solid #ccc;">  $L_{4}(1 - S_{4}'' )r_{4}'' $</td>
+        <td style="border: 1px solid #ccc;">  $L_{4}S_{4}'' f_{4}' $</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+</details>
 
 ### The likelihood
 
@@ -866,9 +1044,7 @@ The first cell in each row is the number of birds from cohort $i$ recovered in t
 
 ### The model
 
-We again use the Brownie parameterisation. 
-
-Under the combined post-fledging model, adults and juveniles are modelled identically as above, but the expected counts of pullus recoveries are given by the table below
+Under the combined post-fledging model, adults and juveniles are modelled identically as above, but the expected counts of recoveries in the post-fledging period are given by the table below
 
 <div style="text-align: center; margin: 1em 0;">
   <table style="margin: 0 auto; border-collapse: collapse; width: auto;">
@@ -919,13 +1095,132 @@ Under the combined post-fledging model, adults and juveniles are modelled identi
         <td style="border: 1px solid #ccc;">  </td>
         <td style="border: 1px solid #ccc;">  </td>
         <td style="border: 1px solid #ccc;">  </td>
-        <td style="border: 1px solid #ccc;">  $L_{4}(f_{4}'' + S_{4}'' f_{4})$</td>
+        <td style="border: 1px solid #ccc;">  $L_{4}(f_{4}'' + S_{4}'' f_{4}')$</td>
       </tr>
     </tbody>
   </table>
 </div>
 
-The explanation for this is that, given a bird has been ringed as a pullus, the probability of it being recovered in the first year is the joint probability of it dying and being recovered during the post-fledging period + the probability of it surviving the post-fledging stage and then dying and being recovered as a juvnile.
+The explanation for this is that, given a bird has been ringed as a pullus, the probability of it being recovered in the first year is the joint probability of it dying and being recovered during the post-fledging period + the probability of it surviving the post-fledging stage and then dying and being recovered as a juvenile.
+
+Details on the Seber parameterisation are below
+
+<details>
+<summary>Seber parameterisation</summary>
+
+<div style="text-align: center; margin: 1em 0;">
+  <table style="margin: 0 auto; border-collapse: collapse; width: auto;">
+    <thead>
+      <tr>
+        <th colspan="6">Expected recovery counts of birds ringed as pulli</th>
+      </tr>
+      <tr>
+        <th style="border: 1px solid #ccc; padding: 6px 12px;" rowspan="3">$\text{Year marked}$</th>
+        <th style="border: 1px solid #ccc; padding: 6px 12px;" rowspan="3">$\text{Number marked}$</th>
+        <th style="border: 1px solid #ccc; padding: 6px 12px;" colspan="4">$\text{Year recovered}$</th>
+      </tr>
+      <tr>
+	<th style="border: 1px solid #ccc; padding: 6px 12px;">$1$</th>
+	<th style="border: 1px solid #ccc; padding: 6px 12px;">$2$</th>
+	<th style="border: 1px solid #ccc; padding: 6px 12px;">$3$</th>
+	<th style="border: 1px solid #ccc; padding: 6px 12px;">$4$</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="border: 1px solid #ccc;">  $1$</td>
+        <td style="border: 1px solid #ccc;">  $L_{1}$</td>
+        <td style="border: 1px solid #ccc;">  $L_{1}((1 - S_{1}'' )r_{1}'' + S_{1}'' (1 - S_{1}')r_{1}')$</td>
+        <td style="border: 1px solid #ccc;">  $L_{1}S_{1}'' S_{1}' (1 - S_{2})r_{2}$</td>
+        <td style="border: 1px solid #ccc;">  $L_{1}S_{1}'' S_{1}' S_{2} (1 - S_{3})r_{3}$</td>
+        <td style="border: 1px solid #ccc;">  $L_{1}S_{1}'' S_{1}' S_{2}S_{3} (1 - S_{4})r_{4}$</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ccc;">  $2$</td>
+        <td style="border: 1px solid #ccc;">  $L_{2}$</td>
+        <td style="border: 1px solid #ccc;">  </td>
+        <td style="border: 1px solid #ccc;">  $L_{2}((1 - S_{2}'' )r_{2}'' + S_{2}'' (1 - S_{2}')r_{2}')$</td>
+        <td style="border: 1px solid #ccc;">  $L_{2}S_{2}'' S_{2}' (1 - S_{3})r_{3}$</td>
+        <td style="border: 1px solid #ccc;">  $L_{2}S_{2}'' S_{2}' S_{3} (1 - S_{4})r_{4}$</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ccc;">  $3$</td>
+        <td style="border: 1px solid #ccc;">  $L_{3}$</td>
+        <td style="border: 1px solid #ccc;">  </td>
+        <td style="border: 1px solid #ccc;">  </td>
+        <td style="border: 1px solid #ccc;">  $L_{3}((1 - S_{3}'' )r_{3}'' + S_{3}'' (1 - S_{3}')r_{3}')$</td>
+        <td style="border: 1px solid #ccc;">  $L_{3}S_{3}'' S_{3}' (1 - S_{4})r_{4}$</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ccc;">  $4$</td>
+        <td style="border: 1px solid #ccc;">  $L_{4}$</td>
+        <td style="border: 1px solid #ccc;">  </td>
+        <td style="border: 1px solid #ccc;">  </td>
+        <td style="border: 1px solid #ccc;">  </td>
+        <td style="border: 1px solid #ccc;">  $L_{4}((1 - S_{4}'' )r_{4}'' + S_{4}'' (1 - S_{4}')r_{4}')$</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+As above, $S_{4}$, $r_{4}$, $S_{4}'$, and $r_{4}'$ are not identifiable. So the post-fledging table becomes
+
+<div style="text-align: center; margin: 1em 0;">
+  <table style="margin: 0 auto; border-collapse: collapse; width: auto;">
+    <thead>
+      <tr>
+        <th colspan="6">Expected recovery counts of birds ringed as pulli</th>
+      </tr>
+      <tr>
+        <th style="border: 1px solid #ccc; padding: 6px 12px;" rowspan="3">$\text{Year marked}$</th>
+        <th style="border: 1px solid #ccc; padding: 6px 12px;" rowspan="3">$\text{Number marked}$</th>
+        <th style="border: 1px solid #ccc; padding: 6px 12px;" colspan="4">$\text{Year recovered}$</th>
+      </tr>
+      <tr>
+	<th style="border: 1px solid #ccc; padding: 6px 12px;">$1$</th>
+	<th style="border: 1px solid #ccc; padding: 6px 12px;">$2$</th>
+	<th style="border: 1px solid #ccc; padding: 6px 12px;">$3$</th>
+	<th style="border: 1px solid #ccc; padding: 6px 12px;">$4$</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="border: 1px solid #ccc;">  $1$</td>
+        <td style="border: 1px solid #ccc;">  $L_{1}$</td>
+        <td style="border: 1px solid #ccc;">  $L_{1}((1 - S_{1}'' )r_{1}'' + S_{1}'' (1 - S_{1}')r_{1}')$</td>
+        <td style="border: 1px solid #ccc;">  $L_{1}S_{1}'' S_{1}' (1 - S_{2})r_{2}$</td>
+        <td style="border: 1px solid #ccc;">  $L_{1}S_{1}'' S_{1}' S_{2} (1 - S_{3})r_{3}$</td>
+        <td style="border: 1px solid #ccc;">  $L_{1}S_{1}'' S_{1}' S_{2}S_{3} f_{4}$</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ccc;">  $2$</td>
+        <td style="border: 1px solid #ccc;">  $L_{2}$</td>
+        <td style="border: 1px solid #ccc;">  </td>
+        <td style="border: 1px solid #ccc;">  $L_{2}((1 - S_{2}'' )r_{2}'' + S_{2}'' (1 - S_{2}')r_{2}')$</td>
+        <td style="border: 1px solid #ccc;">  $L_{2}S_{2}'' S_{2}' (1 - S_{3})r_{3}$</td>
+        <td style="border: 1px solid #ccc;">  $L_{2}S_{2}'' S_{2}' S_{3} f_{4}$</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ccc;">  $3$</td>
+        <td style="border: 1px solid #ccc;">  $L_{3}$</td>
+        <td style="border: 1px solid #ccc;">  </td>
+        <td style="border: 1px solid #ccc;">  </td>
+        <td style="border: 1px solid #ccc;">  $L_{3}((1 - S_{3}'' )r_{3}'' + S_{3}'' (1 - S_{3}')r_{3}')$</td>
+        <td style="border: 1px solid #ccc;">  $L_{3}S_{3}'' S_{3}' f_{4}$</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ccc;">  $4$</td>
+        <td style="border: 1px solid #ccc;">  $L_{4}$</td>
+        <td style="border: 1px solid #ccc;">  </td>
+        <td style="border: 1px solid #ccc;">  </td>
+        <td style="border: 1px solid #ccc;">  </td>
+        <td style="border: 1px solid #ccc;">  $L_{4}((1 - S_{4}'' )r_{4}'' + S_{4}'' f_{4}')$</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+</details>
 
 ### The likelihood
 
@@ -991,6 +1286,10 @@ $${::nomarkdown}
 {:/}$$
 
 As previously stated, there is no benefit to using this model, as the date of recovery is always recorded, meaning we are never in the scenario where we only have access to combined post-fledging and juvenile recoveries. It is presented to demonstrate my ability to research current models, develop them, and criticise them.
+
+## Goodness of fit
+
+To assess goodness of fit, we can construct expected recovery tables for the relevant model, and then compare this to 
 
 ## An example
 
@@ -1193,46 +1492,93 @@ table th {
 
 ### GLM estimates
 
-While MLEs can be used, it is preferable to use a GLM, as it allows for the inclusion of covariates and ensures parameters are bounded (with the right link function). I use a logit link. 
+While MLEs can be used, it is preferable to use a GLM, as it allows for the inclusion of covariates and ensures parameters are bounded (with the right link function). I use a logit link.
 
-The following plots show the estimates and 95% confidence intervals for both models.
+The following plots show the estimates and 95% confidence intervals for both $M_{\text{sep}}$ and $M_{\text{comb}}$ models from the Brownie GLM.
+
+<details>
+<summary>Brownie GLM plots</summary>
 
 <div style="text-align: center;">
   <div class = "row">
-      <img src="/assets/images/f0_GLM_comparison.png" width="400">
-      <img src="/assets/images/S0_GLM_comparison.png" width="400">
+      <img src="/assets/images/f0_Brownie_GLM_comparison.png" width="400">
+      <img src="/assets/images/S0_Brownie_GLM_comparison.png" width="400">
   </div>
 </div>
 
-Clearly the models produce very similar estimates for adults. We see a general decline in reported exploitation rates for adult blackbirds over time and a fluctuating survival rate. By the definition of $f$, this suggests that the reporting rate decreased over the time of the study, reflecting trends in reporting behaviour (<a>https://www.researchgate.net/publication/254310554_Declining_rates_of_ring_recovery_in_British_birds</a>). Survival rates fluctuate around 70%.
+As expected, the models produce near identical estimates for adults. We see a general decline in reported exploitation rates for adult blackbirds over time and a fluctuating survival rate. Survival rates fluctuate around 70%, with high uncertainty for estimates near 1, i.e. in year 11 and 18.
+
+<!--  By the definition of $f$, this suggests that the reporting rate decreased over the time of the study, reflecting trends in reporting behaviour (<a>https://www.researchgate.net/publication/254310554_Declining_rates_of_ring_recovery_in_British_birds</a>).  -->
 
 <div style="text-align: center;">
   <div class = "row">
-      <img src="/assets/images/f1_GLM_comparison.png" width="400">
-      <img src="/assets/images/S1_GLM_comparison.png" width="400">
+      <img src="/assets/images/f1_Brownie_GLM_comparison.png" width="400">
+      <img src="/assets/images/S1_Brownie_GLM_comparison.png" width="400">
   </div>
 </div>
 
-Similarly for juveniles, the values are very similar between models. We see a decline in reported exploitation rates of juveniles up until the middle of the survey, where it increases; this is likely because the estimated survival rate, decreased, meaning $(1 - S)$ increased, and therefore $f$. It is reasonable to suggest that reporting rates decreased over the time of this study. Survival rates appear to fluctuate over the duration of the study, but increase from around 50% to 75%.
+Similarly for juveniles, the values are very similar between models. We see a decline in reported exploitation rates of juveniles up until the middle of the survey, where it increases. Survival rates appear to fluctuate over the duration of the study, but increase from around 50% to 75%.
 
 <div style="text-align: center;">
   <div class = "row">
-      <img src="/assets/images/f2_GLM_comparison_exLast.png" width="400">
-      <img src="/assets/images/S2_GLM_comparison.png" width="400">
+      <img src="/assets/images/f2_Brownie_GLM_comparison_exLast.png" width="400">
+      <img src="/assets/images/S2_Brownie_GLM_comparison.png" width="400">
   </div>
 </div>
 
 Post-fledging estimates exhibit the greatest difference between models. As expected, the more informative data produces estimates with less uncertainty. Reported exploitation rates show a more gradual decline. Survival rate stay fairly constant around 45%, with a possible increase towards the end of the study; there is more uncertainty for these estimates however. The final $M_{\text{comb}}$ estimate for $f''$ was removed due to uncertainty affecting readability. The plot is below
 
 <div style="text-align: center;">
-  <img src="/assets/images/f2_GLM_comparison.png" width="400">
+  <img src="/assets/images/f2_Brownie_GLM_comparison.png" width="400">
 </div>
+
+</details>
+
+Below are the estimates from the Seber GLM
+
+<details>
+<summary>Seber GLM plots</summary>
+
+<div style="text-align: center;">
+  <div class = "row">
+      <img src="/assets/images/r0_Seber_GLM_comparison.png" width="400">
+      <img src="/assets/images/S0_Seber_GLM_comparison.png" width="400">
+  </div>
+</div>
+
+Here, we see that the previously observed uncertainty in high survival rate estimates is lower, while the uncertainty of recovery rate estimates is much higher in these years. The recovery rates of adults fluctuate with no clear trend. Both models produce identical $r$ estimates, as expected.
+
+<div style="text-align: center;">
+  <div class = "row">
+      <img src="/assets/images/r1_Seber_GLM_comparison.png" width="400">
+      <img src="/assets/images/S1_Seber_GLM_comparison.png" width="400">
+  </div>
+</div>
+
+Recovery rates appear to be much higher in the 10th year, after which they decline. We see similar levels of uncertainty in $S'$ estimates. Between models, estimates are very similar.
+
+<div style="text-align: center;">
+  <div class = "row">
+      <img src="/assets/images/r2_Seber_GLM_comparison_exLast.png" width="400">
+      <img src="/assets/images/S2_Seber_GLM_comparison.png" width="400">
+  </div>
+</div>
+
+As with the Brownie parameterisation, the difference between models is greatest here. Recovery rates show no clear trend. Final estimates are highly uncertain. The final $M_{\text{comb}}$ estimate for $r''$ has been removed for readability. The plot is below
+
+<div style="text-align: center;">
+  <img src="/assets/images/r2_Seber_GLM_comparison.png" width="400">
+</div>
+
+</details>
 
 ### Bayesian modelling
 
 While estimating parameters using a GLM is standard and is computationally cheap, it does not allow us to incorporate any prior beliefs about the system we are modelling. Additionally, priors allow us to estimate the final $S$ and $r$ parameters, despite them being more influenced by the priors than other parameters. For this section, I will only consider the model with separate counts for the post-fledging period, as it is more informative. I present results from 2 random-walk models. These models use the same underlying multinomial framework, except they estimate $S$ and $r$, from which $f$ is estimated.
 
 #### RW1
+
+The random walk of order 1 enforces first order smoothing between parameters. I.e., the difference between parameters is assumed to be near 0. 
 
 The priors for the variation in the random walk are given by
 
@@ -1243,7 +1589,7 @@ $${::nomarkdown}
 \end{aligned}
 {:/}$$
 
-The priors for the first parameter are given by
+The priors for the first parameter are given by the positive half-normal distribution
 		
 $${::nomarkdown}
 \begin{aligned}
@@ -1324,7 +1670,9 @@ The estimates of $\sigma$ are
 
 #### RW2
 
-The priors for the variation in the random walk are given by
+In a random walk of order 2, we assume the second differences (difference of differences) is near to 0.
+
+The priors for the variation in the random walk are given by the positive half-normal distribution
 
 $${::nomarkdown}
 \begin{aligned}
@@ -1397,261 +1745,525 @@ The estimates of $\sigma$ are
 <tr><td>s</td><td>p</td><td>0.03804243</td><td>0.02767054</td><td>0.03591204</td><td>0.002300109</td><td>0.13582211</td></tr>
 </table>
 
+###Goodness of fit
+
 ### Data frames
 
 Data frames containing the estimates, standard errors, and 95% confidence interval bounds are below
 
 <details>
-<summary>M<sub>sep</sub> (GLM)</summary>
+<summary>M<sub>sep</sub> (GLM) [Brownie]</summary>
 <table style="margin: 0 auto; border-collapse: collapse; width: auto;">
- <tr><th>Time</th><th>Param</th><th>Age</th><th>Estim</th><th>StdErr</th><th>Lower</th><th>Upper</th></tr>
- <tr><td>1</td><td>f</td><td>0</td><td>0.020654727</td><td>0.003270655</td><td>0.015129707</td><td>0.028139709</td></tr>
- <tr><td>1</td><td>f</td><td>1</td><td>0.025653447</td><td>0.002332144</td><td>0.021458062</td><td>0.030643409</td></tr>
- <tr><td>1</td><td>f</td><td>2</td><td>0.021759267</td><td>0.002983725</td><td>0.016618871</td><td>0.028443653</td></tr>
- <tr><td>1</td><td>S</td><td>0</td><td>0.624955631</td><td>0.09376761</td><td>0.432054471</td><td>0.784949497</td></tr>
- <tr><td>1</td><td>S</td><td>1</td><td>0.510775875</td><td>0.062849467</td><td>0.38939438</td><td>0.630899816</td></tr>
- <tr><td>1</td><td>S</td><td>2</td><td>0.352778052</td><td>0.056942224</td><td>0.250554857</td><td>0.470522948</td></tr>
- <tr><td>2</td><td>f</td><td>0</td><td>0.018213479</td><td>0.002110217</td><td>0.014507002</td><td>0.022844994</td></tr>
- <tr><td>2</td><td>f</td><td>1</td><td>0.019592379</td><td>0.001891126</td><td>0.016209833</td><td>0.023663791</td></tr>
- <tr><td>2</td><td>f</td><td>2</td><td>0.021660073</td><td>0.002489238</td><td>0.017282583</td><td>0.027115739</td></tr>
- <tr><td>2</td><td>S</td><td>0</td><td>0.80437273</td><td>0.10773568</td><td>0.517973398</td><td>0.940238875</td></tr>
- <tr><td>2</td><td>S</td><td>1</td><td>0.627863255</td><td>0.079247071</td><td>0.464631824</td><td>0.766352988</td></tr>
- <tr><td>2</td><td>S</td><td>2</td><td>0.545908836</td><td>0.067887495</td><td>0.41274986</td><td>0.672808946</td></tr>
- <tr><td>3</td><td>f</td><td>0</td><td>0.011876461</td><td>0.001433839</td><td>0.009370974</td><td>0.015041662</td></tr>
- <tr><td>3</td><td>f</td><td>1</td><td>0.017352387</td><td>0.001875767</td><td>0.014034055</td><td>0.021438274</td></tr>
- <tr><td>3</td><td>f</td><td>2</td><td>0.017865576</td><td>0.002004722</td><td>0.014332526</td><td>0.022249883</td></tr>
- <tr><td>3</td><td>S</td><td>0</td><td>0.711539438</td><td>0.091918623</td><td>0.506278609</td><td>0.85577454</td></tr>
- <tr><td>3</td><td>S</td><td>1</td><td>0.539856398</td><td>0.067216018</td><td>0.408401147</td><td>0.665990954</td></tr>
- <tr><td>3</td><td>S</td><td>2</td><td>0.401224927</td><td>0.055327078</td><td>0.299067203</td><td>0.512751243</td></tr>
- <tr><td>4</td><td>f</td><td>0</td><td>0.015239982</td><td>0.001526295</td><td>0.012520247</td><td>0.018539424</td></tr>
- <tr><td>4</td><td>f</td><td>1</td><td>0.016924478</td><td>0.001715281</td><td>0.01387097</td><td>0.020636109</td></tr>
- <tr><td>4</td><td>f</td><td>2</td><td>0.015988037</td><td>0.001938395</td><td>0.012601108</td><td>0.02026662</td></tr>
- <tr><td>4</td><td>S</td><td>0</td><td>0.707161638</td><td>0.087211534</td><td>0.514046954</td><td>0.846456427</td></tr>
- <tr><td>4</td><td>S</td><td>1</td><td>0.573307102</td><td>0.069898101</td><td>0.434212975</td><td>0.701697965</td></tr>
- <tr><td>4</td><td>S</td><td>2</td><td>0.348027304</td><td>0.050253542</td><td>0.256963333</td><td>0.451742806</td></tr>
- <tr><td>5</td><td>f</td><td>0</td><td>0.013275103</td><td>0.001380069</td><td>0.010825115</td><td>0.016270462</td></tr>
- <tr><td>5</td><td>f</td><td>1</td><td>0.014762658</td><td>0.001521134</td><td>0.01205956</td><td>0.018060569</td></tr>
- <tr><td>5</td><td>f</td><td>2</td><td>0.024208653</td><td>0.002379542</td><td>0.019957858</td><td>0.029337717</td></tr>
- <tr><td>5</td><td>S</td><td>0</td><td>0.510404213</td><td>0.059582872</td><td>0.395151397</td><td>0.624561453</td></tr>
- <tr><td>5</td><td>S</td><td>1</td><td>0.414015724</td><td>0.045784631</td><td>0.327992372</td><td>0.505625096</td></tr>
- <tr><td>5</td><td>S</td><td>2</td><td>0.450516715</td><td>0.06033346</td><td>0.33709292</td><td>0.56932798</td></tr>
- <tr><td>6</td><td>f</td><td>0</td><td>0.019606574</td><td>0.001736303</td><td>0.016477701</td><td>0.02331549</td></tr>
- <tr><td>6</td><td>f</td><td>1</td><td>0.01556867</td><td>0.001613155</td><td>0.01270339</td><td>0.01906774</td></tr>
- <tr><td>6</td><td>f</td><td>2</td><td>0.018548845</td><td>0.00204243</td><td>0.014942053</td><td>0.023005931</td></tr>
- <tr><td>6</td><td>S</td><td>0</td><td>0.833379813</td><td>0.092830346</td><td>0.574310115</td><td>0.948830513</td></tr>
- <tr><td>6</td><td>S</td><td>1</td><td>0.563928202</td><td>0.064588712</td><td>0.435936343</td><td>0.683934128</td></tr>
- <tr><td>6</td><td>S</td><td>2</td><td>0.388634111</td><td>0.052493946</td><td>0.291916861</td><td>0.494994634</td></tr>
- <tr><td>7</td><td>f</td><td>0</td><td>0.013946372</td><td>0.001337604</td><td>0.01155363</td><td>0.016826212</td></tr>
- <tr><td>7</td><td>f</td><td>1</td><td>0.014694948</td><td>0.001747253</td><td>0.011635735</td><td>0.018543384</td></tr>
- <tr><td>7</td><td>f</td><td>2</td><td>0.01735096</td><td>0.002257012</td><td>0.01343902</td><td>0.022375794</td></tr>
- <tr><td>7</td><td>S</td><td>0</td><td>0.806496566</td><td>0.094284982</td><td>0.560515031</td><td>0.931601625</td></tr>
- <tr><td>7</td><td>S</td><td>1</td><td>0.618051988</td><td>0.076295583</td><td>0.462027718</td><td>0.75301514</td></tr>
- <tr><td>7</td><td>S</td><td>2</td><td>0.316390471</td><td>0.053602291</td><td>0.221636619</td><td>0.429310403</td></tr>
- <tr><td>8</td><td>f</td><td>0</td><td>0.011605432</td><td>0.0011439</td><td>0.009564692</td><td>0.014075401</td></tr>
- <tr><td>8</td><td>f</td><td>1</td><td>0.013740401</td><td>0.00171319</td><td>0.010757229</td><td>0.017536196</td></tr>
- <tr><td>8</td><td>f</td><td>2</td><td>0.01645331</td><td>0.002199791</td><td>0.012653688</td><td>0.021369182</td></tr>
- <tr><td>8</td><td>S</td><td>0</td><td>0.780007501</td><td>0.091626595</td><td>0.554565228</td><td>0.909889508</td></tr>
- <tr><td>8</td><td>S</td><td>1</td><td>0.692595617</td><td>0.086285635</td><td>0.50448619</td><td>0.832941476</td></tr>
- <tr><td>8</td><td>S</td><td>2</td><td>0.45727062</td><td>0.068153236</td><td>0.329689934</td><td>0.590713784</td></tr>
- <tr><td>9</td><td>f</td><td>0</td><td>0.012507136</td><td>0.001185426</td><td>0.010384609</td><td>0.015056888</td></tr>
- <tr><td>9</td><td>f</td><td>1</td><td>0.017657292</td><td>0.001925792</td><td>0.014253438</td><td>0.021855995</td></tr>
- <tr><td>9</td><td>f</td><td>2</td><td>0.018517843</td><td>0.00224129</td><td>0.01459992</td><td>0.023462117</td></tr>
- <tr><td>9</td><td>S</td><td>0</td><td>0.707732349</td><td>0.083967153</td><td>0.522174856</td><td>0.842909077</td></tr>
- <tr><td>9</td><td>S</td><td>1</td><td>0.648208025</td><td>0.081526726</td><td>0.477623341</td><td>0.787832553</td></tr>
- <tr><td>9</td><td>S</td><td>2</td><td>0.397399713</td><td>0.059207182</td><td>0.288865475</td><td>0.517062755</td></tr>
- <tr><td>10</td><td>f</td><td>0</td><td>0.011528492</td><td>0.001111907</td><td>0.009540885</td><td>0.013924346</td></tr>
- <tr><td>10</td><td>f</td><td>1</td><td>0.020940171</td><td>0.002104241</td><td>0.017189918</td><td>0.025487384</td></tr>
- <tr><td>10</td><td>f</td><td>2</td><td>0.017785629</td><td>0.002399913</td><td>0.013644485</td><td>0.02315412</td></tr>
- <tr><td>10</td><td>S</td><td>0</td><td>0.760498401</td><td>0.084253834</td><td>0.561872565</td><td>0.887160812</td></tr>
- <tr><td>10</td><td>S</td><td>1</td><td>0.865681526</td><td>0.09776731</td><td>0.553620176</td><td>0.971007534</td></tr>
- <tr><td>10</td><td>S</td><td>2</td><td>0.342263256</td><td>0.0525747</td><td>0.247690787</td><td>0.45128432</td></tr>
- <tr><td>11</td><td>f</td><td>0</td><td>0.010467134</td><td>0.000950549</td><td>0.008759066</td><td>0.012504084</td></tr>
- <tr><td>11</td><td>f</td><td>1</td><td>0.019442836</td><td>0.002253051</td><td>0.015485079</td><td>0.024387081</td></tr>
- <tr><td>11</td><td>f</td><td>2</td><td>0.015372908</td><td>0.002355146</td><td>0.011378133</td><td>0.020740793</td></tr>
- <tr><td>11</td><td>S</td><td>0</td><td>0.98535085</td><td>0.060036294</td><td>0.019013102</td><td>0.999995716</td></tr>
- <tr><td>11</td><td>S</td><td>1</td><td>0.832296904</td><td>0.113042017</td><td>0.503657386</td><td>0.960431845</td></tr>
- <tr><td>11</td><td>S</td><td>2</td><td>0.373961838</td><td>0.066986424</td><td>0.254251153</td><td>0.511385821</td></tr>
- <tr><td>12</td><td>f</td><td>0</td><td>0.007838441</td><td>0.000682081</td><td>0.006608634</td><td>0.009294962</td></tr>
- <tr><td>12</td><td>f</td><td>1</td><td>0.017123125</td><td>0.001944597</td><td>0.013700601</td><td>0.021382089</td></tr>
- <tr><td>12</td><td>f</td><td>2</td><td>0.018531522</td><td>0.002431255</td><td>0.0143214</td><td>0.02394924</td></tr>
- <tr><td>12</td><td>S</td><td>0</td><td>0.595596235</td><td>0.070907366</td><td>0.452677869</td><td>0.72395296</td></tr>
- <tr><td>12</td><td>S</td><td>1</td><td>0.811010992</td><td>0.11299933</td><td>0.502897485</td><td>0.947925249</td></tr>
- <tr><td>12</td><td>S</td><td>2</td><td>0.269005893</td><td>0.051868073</td><td>0.179953852</td><td>0.381618526</td></tr>
- <tr><td>13</td><td>f</td><td>0</td><td>0.009851807</td><td>0.001021195</td><td>0.008038943</td><td>0.012068516</td></tr>
- <tr><td>13</td><td>f</td><td>1</td><td>0.014279455</td><td>0.001646456</td><td>0.011387146</td><td>0.017893108</td></tr>
- <tr><td>13</td><td>f</td><td>2</td><td>0.019119118</td><td>0.002484554</td><td>0.014811466</td><td>0.024648231</td></tr>
- <tr><td>13</td><td>S</td><td>0</td><td>0.611310993</td><td>0.081739294</td><td>0.444868542</td><td>0.755299371</td></tr>
- <tr><td>13</td><td>S</td><td>1</td><td>0.730904161</td><td>0.099530655</td><td>0.501841455</td><td>0.879855621</td></tr>
- <tr><td>13</td><td>S</td><td>2</td><td>0.432598551</td><td>0.072598007</td><td>0.299231611</td><td>0.576505833</td></tr>
- <tr><td>14</td><td>f</td><td>0</td><td>0.009805907</td><td>0.001037971</td><td>0.007967068</td><td>0.012063999</td></tr>
- <tr><td>14</td><td>f</td><td>1</td><td>0.015603755</td><td>0.001661632</td><td>0.012660285</td><td>0.019218249</td></tr>
- <tr><td>14</td><td>f</td><td>2</td><td>0.01867445</td><td>0.002309719</td><td>0.014646766</td><td>0.023782966</td></tr>
- <tr><td>14</td><td>S</td><td>0</td><td>0.688220615</td><td>0.094455718</td><td>0.482261291</td><td>0.839513381</td></tr>
- <tr><td>14</td><td>S</td><td>1</td><td>0.722862169</td><td>0.100102851</td><td>0.494831098</td><td>0.87414145</td></tr>
- <tr><td>14</td><td>S</td><td>2</td><td>0.309452535</td><td>0.056301832</td><td>0.210970452</td><td>0.428916223</td></tr>
- <tr><td>15</td><td>f</td><td>0</td><td>0.009408594</td><td>0.001029292</td><td>0.007591259</td><td>0.011655886</td></tr>
- <tr><td>15</td><td>f</td><td>1</td><td>0.015133192</td><td>0.001665375</td><td>0.012193015</td><td>0.01876888</td></tr>
- <tr><td>15</td><td>f</td><td>2</td><td>0.017004444</td><td>0.002175121</td><td>0.013226998</td><td>0.021836802</td></tr>
- <tr><td>15</td><td>S</td><td>0</td><td>0.543782447</td><td>0.074309746</td><td>0.398549983</td><td>0.681933019</td></tr>
- <tr><td>15</td><td>S</td><td>1</td><td>0.567531692</td><td>0.079201393</td><td>0.410792767</td><td>0.711825005</td></tr>
- <tr><td>15</td><td>S</td><td>2</td><td>0.471265743</td><td>0.074775804</td><td>0.331092349</td><td>0.616122201</td></tr>
- <tr><td>16</td><td>f</td><td>0</td><td>0.011355034</td><td>0.001182788</td><td>0.009256031</td><td>0.013923342</td></tr>
- <tr><td>16</td><td>f</td><td>1</td><td>0.014101964</td><td>0.001566772</td><td>0.011338863</td><td>0.017526454</td></tr>
- <tr><td>16</td><td>f</td><td>2</td><td>0.016299782</td><td>0.00205037</td><td>0.012732219</td><td>0.020845869</td></tr>
- <tr><td>16</td><td>S</td><td>0</td><td>0.642421222</td><td>0.083754246</td><td>0.467863084</td><td>0.785919477</td></tr>
- <tr><td>16</td><td>S</td><td>1</td><td>0.571802553</td><td>0.077892851</td><td>0.417187562</td><td>0.713562193</td></tr>
- <tr><td>16</td><td>S</td><td>2</td><td>0.364441096</td><td>0.063086743</td><td>0.251622095</td><td>0.494425245</td></tr>
- <tr><td>17</td><td>f</td><td>0</td><td>0.011671297</td><td>0.001161708</td><td>0.009600664</td><td>0.014182122</td></tr>
- <tr><td>17</td><td>f</td><td>1</td><td>0.01087188</td><td>0.001310926</td><td>0.008581077</td><td>0.013765744</td></tr>
- <tr><td>17</td><td>f</td><td>2</td><td>0.016293178</td><td>0.002199153</td><td>0.012499209</td><td>0.021214015</td></tr>
- <tr><td>17</td><td>S</td><td>0</td><td>0.773440497</td><td>0.100664104</td><td>0.525449211</td><td>0.913235589</td></tr>
- <tr><td>17</td><td>S</td><td>1</td><td>0.61690007</td><td>0.088280023</td><td>0.436414991</td><td>0.770041745</td></tr>
- <tr><td>17</td><td>S</td><td>2</td><td>0.44023602</td><td>0.083088459</td><td>0.28883285</td><td>0.603638988</td></tr>
- <tr><td>18</td><td>f</td><td>0</td><td>0.010228615</td><td>0.001052026</td><td>0.008359545</td><td>0.012510308</td></tr>
- <tr><td>18</td><td>f</td><td>1</td><td>0.011624251</td><td>0.001383774</td><td>0.009202492</td><td>0.014673889</td></tr>
- <tr><td>18</td><td>f</td><td>2</td><td>0.016672679</td><td>0.002188823</td><td>0.012883428</td><td>0.021552084</td></tr>
- <tr><td>18</td><td>S</td><td>0</td><td>0.961180287</td><td>0.125700593</td><td>0.032493283</td><td>0.999945221</td></tr>
- <tr><td>18</td><td>S</td><td>1</td><td>0.829941145</td><td>0.146588062</td><td>0.389250613</td><td>0.973938366</td></tr>
- <tr><td>18</td><td>S</td><td>2</td><td>0.427286981</td><td>0.085958814</td><td>0.27261281</td><td>0.597617708</td></tr>
- <tr><td>19</td><td>f</td><td>0</td><td>0.006701327</td><td>0.000856235</td><td>0.005215732</td><td>0.008606403</td></tr>
- <tr><td>19</td><td>f</td><td>1</td><td>0.010328084</td><td>0.001301482</td><td>0.00806542</td><td>0.013217055</td></tr>
- <tr><td>19</td><td>f</td><td>2</td><td>0.014343665</td><td>0.00222415</td><td>0.01057802</td><td>0.019423518</td></tr>
- <tr><td>19</td><td>S</td><td>0</td><td>0.552393474</td><td>0.114628879</td><td>0.332184409</td><td>0.753805761</td></tr>
- <tr><td>19</td><td>S</td><td>1</td><td>0.808358064</td><td>0.178436313</td><td>0.306143088</td><td>0.975801439</td></tr>
- <tr><td>19</td><td>S</td><td>2</td><td>0.561548602</td><td>0.120086994</td><td>0.329926308</td><td>0.769132108</td></tr>
- <tr><td>20</td><td>f</td><td>0</td><td>0.008781213</td><td>0.001389404</td><td>0.006437297</td><td>0.011968302</td></tr>
- <tr><td>20</td><td>f</td><td>1</td><td>0.017911743</td><td>0.001600518</td><td>0.015030099</td><td>0.021333902</td></tr>
- <tr><td>20</td><td>f</td><td>2</td><td>0.017351767</td><td>0.002056414</td><td>0.013749003</td><td>0.02187765</td></tr>
- <tr><td>20</td><td>S</td><td>0</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td></tr>
- <tr><td>20</td><td>S</td><td>1</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td></tr>
- <tr><td>20</td><td>S</td><td>2</td><td>0.997980667</td><td>0.009163383</td><td>0.062434436</td><td>0.999999727</td></tr>
+<tr><th>time</th><th>Param</th><th>Age</th><th>Estim</th><th>StdErr</th><th>Lower</th><th>Upper</th></tr>
+<tr><td>1</td><td>f</td><td>0</td><td>0.020617639</td><td>0.003267762</td><td>0.015098264</td><td>0.028097136</td></tr>
+<tr><td>1</td><td>f</td><td>1</td><td>0.025667032</td><td>0.002332928</td><td>0.021470163</td><td>0.030658578</td></tr>
+<tr><td>1</td><td>f</td><td>2</td><td>0.021764591</td><td>0.002984161</td><td>0.016623377</td><td>0.028449859</td></tr>
+<tr><td>1</td><td>S</td><td>0</td><td>0.623644812</td><td>0.093537825</td><td>0.431421207</td><td>0.783494876</td></tr>
+<tr><td>1</td><td>S</td><td>1</td><td>0.508727202</td><td>0.062464879</td><td>0.388181765</td><td>0.628266269</td></tr>
+<tr><td>1</td><td>S</td><td>2</td><td>0.351984281</td><td>0.056829035</td><td>0.249990476</td><td>0.469539321</td></tr>
+<tr><td>2</td><td>f</td><td>0</td><td>0.018260871</td><td>0.002113026</td><td>0.014548934</td><td>0.022897847</td></tr>
+<tr><td>2</td><td>f</td><td>1</td><td>0.019585424</td><td>0.001890824</td><td>0.01620348</td><td>0.023656265</td></tr>
+<tr><td>2</td><td>f</td><td>2</td><td>0.021633875</td><td>0.002487741</td><td>0.017259314</td><td>0.027086655</td></tr>
+<tr><td>2</td><td>S</td><td>0</td><td>0.810075397</td><td>0.108386372</td><td>0.517423306</td><td>0.944342857</td></tr>
+<tr><td>2</td><td>S</td><td>1</td><td>0.630667555</td><td>0.07952999</td><td>0.466515564</td><td>0.769289185</td></tr>
+<tr><td>2</td><td>S</td><td>2</td><td>0.546501259</td><td>0.067990653</td><td>0.413102752</td><td>0.67354037</td></tr>
+<tr><td>3</td><td>f</td><td>0</td><td>0.011833505</td><td>0.001428588</td><td>0.00933719</td><td>0.014987118</td></tr>
+<tr><td>3</td><td>f</td><td>1</td><td>0.017344092</td><td>0.001875256</td><td>0.014026735</td><td>0.021428962</td></tr>
+<tr><td>3</td><td>f</td><td>2</td><td>0.017864627</td><td>0.002004658</td><td>0.014331698</td><td>0.022248806</td></tr>
+<tr><td>3</td><td>S</td><td>0</td><td>0.707110333</td><td>0.090496529</td><td>0.506237451</td><td>0.850411273</td></tr>
+<tr><td>3</td><td>S</td><td>1</td><td>0.538880488</td><td>0.066860676</td><td>0.40816894</td><td>0.664455471</td></tr>
+<tr><td>3</td><td>S</td><td>2</td><td>0.401722734</td><td>0.055403209</td><td>0.299410064</td><td>0.513377889</td></tr>
+<tr><td>4</td><td>f</td><td>0</td><td>0.015267504</td><td>0.00152213</td><td>0.012554032</td><td>0.018556452</td></tr>
+<tr><td>4</td><td>f</td><td>1</td><td>0.016927385</td><td>0.001715462</td><td>0.013873534</td><td>0.020639383</td></tr>
+<tr><td>4</td><td>f</td><td>2</td><td>0.015973421</td><td>0.00193753</td><td>0.012588188</td><td>0.020250347</td></tr>
+<tr><td>4</td><td>S</td><td>0</td><td>0.707099957</td><td>0.086454123</td><td>0.515788359</td><td>0.845470314</td></tr>
+<tr><td>4</td><td>S</td><td>1</td><td>0.573638118</td><td>0.06990295</td><td>0.434508553</td><td>0.702012584</td></tr>
+<tr><td>4</td><td>S</td><td>2</td><td>0.347513217</td><td>0.050181518</td><td>0.256592429</td><td>0.451101573</td></tr>
+<tr><td>5</td><td>f</td><td>0</td><td>0.01328921</td><td>0.001378604</td><td>0.010841313</td><td>0.016280728</td></tr>
+<tr><td>5</td><td>f</td><td>1</td><td>0.014762704</td><td>0.001521132</td><td>0.012059608</td><td>0.018060609</td></tr>
+<tr><td>5</td><td>f</td><td>2</td><td>0.024208649</td><td>0.002379535</td><td>0.019957866</td><td>0.029337695</td></tr>
+<tr><td>5</td><td>S</td><td>0</td><td>0.511507223</td><td>0.059545492</td><td>0.396266232</td><td>0.625537842</td></tr>
+<tr><td>5</td><td>S</td><td>1</td><td>0.414505753</td><td>0.045797245</td><td>0.328443429</td><td>0.506123353</td></tr>
+<tr><td>5</td><td>S</td><td>2</td><td>0.450693545</td><td>0.060361282</td><td>0.337210857</td><td>0.56954885</td></tr>
+<tr><td>6</td><td>f</td><td>0</td><td>0.019583563</td><td>0.001732982</td><td>0.016460489</td><td>0.023285155</td></tr>
+<tr><td>6</td><td>f</td><td>1</td><td>0.015572416</td><td>0.001613381</td><td>0.012706705</td><td>0.019071939</td></tr>
+<tr><td>6</td><td>f</td><td>2</td><td>0.018559196</td><td>0.002042997</td><td>0.014951295</td><td>0.023017377</td></tr>
+<tr><td>6</td><td>S</td><td>0</td><td>0.831766561</td><td>0.091943527</td><td>0.576971843</td><td>0.947152207</td></tr>
+<tr><td>6</td><td>S</td><td>1</td><td>0.563190653</td><td>0.064258545</td><td>0.435894065</td><td>0.68267352</td></tr>
+<tr><td>6</td><td>S</td><td>2</td><td>0.388572087</td><td>0.052482068</td><td>0.29187795</td><td>0.494911179</td></tr>
+<tr><td>7</td><td>f</td><td>0</td><td>0.013956324</td><td>0.001333262</td><td>0.011570497</td><td>0.016825733</td></tr>
+<tr><td>7</td><td>f</td><td>1</td><td>0.014686379</td><td>0.001746668</td><td>0.011628278</td><td>0.018533645</td></tr>
+<tr><td>7</td><td>f</td><td>2</td><td>0.017340146</td><td>0.002256313</td><td>0.013429569</td><td>0.022363636</td></tr>
+<tr><td>7</td><td>S</td><td>0</td><td>0.803919987</td><td>0.093498416</td><td>0.561787612</td><td>0.929138708</td></tr>
+<tr><td>7</td><td>S</td><td>1</td><td>0.615731999</td><td>0.076063911</td><td>0.460426094</td><td>0.750554265</td></tr>
+<tr><td>7</td><td>S</td><td>2</td><td>0.316624272</td><td>0.053640654</td><td>0.221796384</td><td>0.429613166</td></tr>
+<tr><td>8</td><td>f</td><td>0</td><td>0.011642502</td><td>0.001147144</td><td>0.009595899</td><td>0.014119379</td></tr>
+<tr><td>8</td><td>f</td><td>1</td><td>0.013748714</td><td>0.001713836</td><td>0.010764335</td><td>0.017545826</td></tr>
+<tr><td>8</td><td>f</td><td>2</td><td>0.016437136</td><td>0.002198778</td><td>0.012639517</td><td>0.021351099</td></tr>
+<tr><td>8</td><td>S</td><td>0</td><td>0.787121773</td><td>0.093328794</td><td>0.553784753</td><td>0.916777779</td></tr>
+<tr><td>8</td><td>S</td><td>1</td><td>0.696585161</td><td>0.086956924</td><td>0.506172566</td><td>0.837192655</td></tr>
+<tr><td>8</td><td>S</td><td>2</td><td>0.455850798</td><td>0.067894555</td><td>0.328818443</td><td>0.588899561</td></tr>
+<tr><td>9</td><td>f</td><td>0</td><td>0.012445191</td><td>0.001185437</td><td>0.010323598</td><td>0.014996184</td></tr>
+<tr><td>9</td><td>f</td><td>1</td><td>0.017680522</td><td>0.001927249</td><td>0.014273893</td><td>0.021882136</td></tr>
+<tr><td>9</td><td>f</td><td>2</td><td>0.018507279</td><td>0.002240715</td><td>0.014590505</td><td>0.023450478</td></tr>
+<tr><td>9</td><td>S</td><td>0</td><td>0.703359342</td><td>0.083596595</td><td>0.519501198</td><td>0.8387083</td></tr>
+<tr><td>9</td><td>S</td><td>1</td><td>0.649213894</td><td>0.081839014</td><td>0.477824364</td><td>0.789170383</td></tr>
+<tr><td>9</td><td>S</td><td>2</td><td>0.395461095</td><td>0.058905959</td><td>0.287543017</td><td>0.514625785</td></tr>
+<tr><td>10</td><td>f</td><td>0</td><td>0.011534258</td><td>0.001113314</td><td>0.009544274</td><td>0.013933319</td></tr>
+<tr><td>10</td><td>f</td><td>1</td><td>0.020954757</td><td>0.002105161</td><td>0.017202769</td><td>0.025503832</td></tr>
+<tr><td>10</td><td>f</td><td>2</td><td>0.017788162</td><td>0.002400121</td><td>0.01364663</td><td>0.023157074</td></tr>
+<tr><td>10</td><td>S</td><td>0</td><td>0.763238839</td><td>0.084751734</td><td>0.5624888</td><td>0.88990483</td></tr>
+<tr><td>10</td><td>S</td><td>1</td><td>0.869077573</td><td>0.098588005</td><td>0.548485706</td><td>0.973171632</td></tr>
+<tr><td>10</td><td>S</td><td>2</td><td>0.34115297</td><td>0.0524372</td><td>0.246862011</td><td>0.449942781</td></tr>
+<tr><td>11</td><td>f</td><td>0</td><td>0.010437097</td><td>0.000947785</td><td>0.008733993</td><td>0.012468124</td></tr>
+<tr><td>11</td><td>f</td><td>1</td><td>0.01944119</td><td>0.002253161</td><td>0.015483298</td><td>0.024385752</td></tr>
+<tr><td>11</td><td>f</td><td>2</td><td>0.015353567</td><td>0.002353662</td><td>0.011361674</td><td>0.020718607</td></tr>
+<tr><td>11</td><td>S</td><td>0</td><td>0.989408815</td><td>0.055447486</td><td>0.002918271</td><td>0.999999665</td></tr>
+<tr><td>11</td><td>S</td><td>1</td><td>0.840936409</td><td>0.115844717</td><td>0.491939848</td><td>0.966517205</td></tr>
+<tr><td>11</td><td>S</td><td>2</td><td>0.373708005</td><td>0.067039575</td><td>0.253932186</td><td>0.511264432</td></tr>
+<tr><td>12</td><td>f</td><td>0</td><td>0.007788949</td><td>0.000675737</td><td>0.006570284</td><td>0.009231553</td></tr>
+<tr><td>12</td><td>f</td><td>1</td><td>0.017093526</td><td>0.001942648</td><td>0.013674706</td><td>0.021348587</td></tr>
+<tr><td>12</td><td>f</td><td>2</td><td>0.018529111</td><td>0.002431062</td><td>0.014319349</td><td>0.023946437</td></tr>
+<tr><td>12</td><td>S</td><td>0</td><td>0.589115552</td><td>0.069603322</td><td>0.449353535</td><td>0.715836834</td></tr>
+<tr><td>12</td><td>S</td><td>1</td><td>0.801099498</td><td>0.10912239</td><td>0.512718904</td><td>0.939087732</td></tr>
+<tr><td>12</td><td>S</td><td>2</td><td>0.271068805</td><td>0.052186667</td><td>0.181402742</td><td>0.384251629</td></tr>
+<tr><td>13</td><td>f</td><td>0</td><td>0.009897492</td><td>0.001016552</td><td>0.008091256</td><td>0.01210202</td></tr>
+<tr><td>13</td><td>f</td><td>1</td><td>0.014278584</td><td>0.001646431</td><td>0.011386332</td><td>0.017892203</td></tr>
+<tr><td>13</td><td>f</td><td>2</td><td>0.019095235</td><td>0.002483025</td><td>0.014790573</td><td>0.02462142</td></tr>
+<tr><td>13</td><td>S</td><td>0</td><td>0.61677698</td><td>0.082500703</td><td>0.448129225</td><td>0.761335085</td></tr>
+<tr><td>13</td><td>S</td><td>1</td><td>0.734864237</td><td>0.100840559</td><td>0.501257055</td><td>0.884306502</td></tr>
+<tr><td>13</td><td>S</td><td>2</td><td>0.432247204</td><td>0.072563163</td><td>0.29896633</td><td>0.576115723</td></tr>
+<tr><td>14</td><td>f</td><td>0</td><td>0.009770496</td><td>0.001040096</td><td>0.007928938</td><td>0.012034581</td></tr>
+<tr><td>14</td><td>f</td><td>1</td><td>0.015601056</td><td>0.00166156</td><td>0.012657752</td><td>0.019215446</td></tr>
+<tr><td>14</td><td>f</td><td>2</td><td>0.018617522</td><td>0.0023063</td><td>0.014596551</td><td>0.023719504</td></tr>
+<tr><td>14</td><td>S</td><td>0</td><td>0.688350373</td><td>0.095264297</td><td>0.480518882</td><td>0.840613613</td></tr>
+<tr><td>14</td><td>S</td><td>1</td><td>0.727206681</td><td>0.101385315</td><td>0.494698197</td><td>0.878915551</td></tr>
+<tr><td>14</td><td>S</td><td>2</td><td>0.308111289</td><td>0.056092643</td><td>0.210039224</td><td>0.427211054</td></tr>
+<tr><td>15</td><td>f</td><td>0</td><td>0.009377257</td><td>0.001030907</td><td>0.007557995</td><td>0.011629296</td></tr>
+<tr><td>15</td><td>f</td><td>1</td><td>0.015135906</td><td>0.001665475</td><td>0.012195518</td><td>0.018771762</td></tr>
+<tr><td>15</td><td>f</td><td>2</td><td>0.016986404</td><td>0.002174007</td><td>0.013211146</td><td>0.02181664</td></tr>
+<tr><td>15</td><td>S</td><td>0</td><td>0.542018494</td><td>0.07431833</td><td>0.396916796</td><td>0.680326167</td></tr>
+<tr><td>15</td><td>S</td><td>1</td><td>0.567901257</td><td>0.07925805</td><td>0.411016516</td><td>0.712253007</td></tr>
+<tr><td>15</td><td>S</td><td>2</td><td>0.47048715</td><td>0.074628789</td><td>0.330632868</td><td>0.615134381</td></tr>
+<tr><td>16</td><td>f</td><td>0</td><td>0.011356858</td><td>0.001183073</td><td>0.009257366</td><td>0.013925805</td></tr>
+<tr><td>16</td><td>f</td><td>1</td><td>0.014091081</td><td>0.001566088</td><td>0.011329285</td><td>0.017514208</td></tr>
+<tr><td>16</td><td>f</td><td>2</td><td>0.016236566</td><td>0.002046445</td><td>0.012676676</td><td>0.020775117</td></tr>
+<tr><td>16</td><td>S</td><td>0</td><td>0.643358583</td><td>0.083855971</td><td>0.46845558</td><td>0.786891389</td></tr>
+<tr><td>16</td><td>S</td><td>1</td><td>0.573587097</td><td>0.07823108</td><td>0.418141099</td><td>0.715736889</td></tr>
+<tr><td>16</td><td>S</td><td>2</td><td>0.364653849</td><td>0.063127898</td><td>0.251754509</td><td>0.494708655</td></tr>
+<tr><td>17</td><td>f</td><td>0</td><td>0.011657978</td><td>0.001160646</td><td>0.009589282</td><td>0.014166569</td></tr>
+<tr><td>17</td><td>f</td><td>1</td><td>0.010877028</td><td>0.001311255</td><td>0.008585591</td><td>0.013771538</td></tr>
+<tr><td>17</td><td>f</td><td>2</td><td>0.016272045</td><td>0.002197802</td><td>0.012480741</td><td>0.021190329</td></tr>
+<tr><td>17</td><td>S</td><td>0</td><td>0.770597409</td><td>0.099161766</td><td>0.52803062</td><td>0.909795044</td></tr>
+<tr><td>17</td><td>S</td><td>1</td><td>0.617431873</td><td>0.087792622</td><td>0.437868859</td><td>0.769792459</td></tr>
+<tr><td>17</td><td>S</td><td>2</td><td>0.43756572</td><td>0.082550755</td><td>0.287307629</td><td>0.600224734</td></tr>
+<tr><td>18</td><td>f</td><td>0</td><td>0.010246432</td><td>0.001043328</td><td>0.008391021</td><td>0.012506934</td></tr>
+<tr><td>18</td><td>f</td><td>1</td><td>0.011631331</td><td>0.001384349</td><td>0.009208512</td><td>0.014682163</td></tr>
+<tr><td>18</td><td>f</td><td>2</td><td>0.016666997</td><td>0.002188466</td><td>0.012878448</td><td>0.021545724</td></tr>
+<tr><td>18</td><td>S</td><td>0</td><td>0.976417225</td><td>0.115093011</td><td>0.002298469</td><td>0.999998656</td></tr>
+<tr><td>18</td><td>S</td><td>1</td><td>0.846816512</td><td>0.150404159</td><td>0.362920952</td><td>0.981700343</td></tr>
+<tr><td>18</td><td>S</td><td>2</td><td>0.425531526</td><td>0.085724752</td><td>0.27141907</td><td>0.595613855</td></tr>
+<tr><td>19</td><td>f</td><td>0</td><td>0.006612834</td><td>0.00081828</td><td>0.005187741</td><td>0.008426088</td></tr>
+<tr><td>19</td><td>f</td><td>1</td><td>0.010305027</td><td>0.001300065</td><td>0.008045136</td><td>0.013191285</td></tr>
+<tr><td>19</td><td>f</td><td>2</td><td>0.01431259</td><td>0.002221747</td><td>0.010551612</td><td>0.019387849</td></tr>
+<tr><td>19</td><td>S</td><td>0</td><td>0.535137645</td><td>0.107333467</td><td>0.330729348</td><td>0.728386846</td></tr>
+<tr><td>19</td><td>S</td><td>1</td><td>0.786940284</td><td>0.166514544</td><td>0.345253742</td><td>0.962785347</td></tr>
+<tr><td>19</td><td>S</td><td>2</td><td>0.566005353</td><td>0.121015508</td><td>0.331808372</td><td>0.774021548</td></tr>
+<tr><td>20</td><td>f</td><td>0</td><td>0.008931079</td><td>0.001368628</td><td>0.006611505</td><td>0.012054574</td></tr>
+<tr><td>20</td><td>f</td><td>1</td><td>0.017911748</td><td>0.001600518</td><td>0.015030104</td><td>0.021333907</td></tr>
+<tr><td>20</td><td>f</td><td>2</td><td>0.017358008</td><td>0.002056777</td><td>0.013754533</td><td>0.021884589</td></tr>
+<tr><td>20</td><td>S</td><td>0</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td></tr>
+<tr><td>20</td><td>S</td><td>1</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td></tr>
+<tr><td>20</td><td>S</td><td>2</td><td>0.998771002</td><td>0.007151514</td><td>0.008845945</td><td>0.999999986</td></tr>
 </table>
 </details>
 
 <details>
-<summary>M<sub>comb</sub> (GLM)</summary>
+<summary>M<sub>comb</sub> (GLM) [Brownie]</summary>
 <table style="margin: 0 auto; border-collapse: collapse; width: auto;">
- <tr><th>Time</th><th>Param</th><th>Age</th><th>Estim</th><th>StdErr</th><th>Lower</th><th>Upper</th></tr>
- <tr><td>1</td><td>f</td><td>0</td><td>0.020582996</td><td>0.003265001</td><td>1.51E-02</td><td>0.028057217</td></tr>
- <tr><td>1</td><td>f</td><td>1</td><td>0.027246432</td><td>0.002516883</td><td>2.27E-02</td><td>0.032638416</td></tr>
- <tr><td>1</td><td>f</td><td>2</td><td>0.014906801</td><td>0.004521316</td><td>8.21E-03</td><td>0.026924007</td></tr>
- <tr><td>1</td><td>S</td><td>0</td><td>0.625716095</td><td>0.093868837</td><td>4.32E-01</td><td>0.785747069</td></tr>
- <tr><td>1</td><td>S</td><td>1</td><td>0.480039728</td><td>0.06120146</td><td>3.63E-01</td><td>0.598856261</td></tr>
- <tr><td>1</td><td>S</td><td>2</td><td>0.480994738</td><td>0.098356309</td><td>3.00E-01</td><td>0.667338397</td></tr>
- <tr><td>2</td><td>f</td><td>0</td><td>0.018241243</td><td>0.002110666</td><td>1.45E-02</td><td>0.022873029</td></tr>
- <tr><td>2</td><td>f</td><td>1</td><td>0.021079811</td><td>0.002162712</td><td>1.72E-02</td><td>0.025763</td></tr>
- <tr><td>2</td><td>f</td><td>2</td><td>0.016696609</td><td>0.003952972</td><td>1.05E-02</td><td>0.026498871</td></tr>
- <tr><td>2</td><td>S</td><td>0</td><td>0.802702065</td><td>0.106449913</td><td>5.21E-01</td><td>0.93823649</td></tr>
- <tr><td>2</td><td>S</td><td>1</td><td>0.592449812</td><td>0.077777635</td><td>4.36E-01</td><td>0.732131439</td></tr>
- <tr><td>2</td><td>S</td><td>2</td><td>0.650815858</td><td>0.102857245</td><td>4.34E-01</td><td>0.819022531</td></tr>
- <tr><td>3</td><td>f</td><td>0</td><td>0.011905676</td><td>0.001431427</td><td>9.40E-03</td><td>0.015063962</td></tr>
- <tr><td>3</td><td>f</td><td>1</td><td>0.017716542</td><td>0.002097897</td><td>1.40E-02</td><td>0.022333024</td></tr>
- <tr><td>3</td><td>f</td><td>2</td><td>0.017058047</td><td>0.002853945</td><td>1.23E-02</td><td>0.023653329</td></tr>
- <tr><td>3</td><td>S</td><td>0</td><td>0.712311756</td><td>0.09152893</td><td>5.08E-01</td><td>0.855952267</td></tr>
- <tr><td>3</td><td>S</td><td>1</td><td>0.531919394</td><td>0.069244466</td><td>3.97E-01</td><td>0.662163298</td></tr>
- <tr><td>3</td><td>S</td><td>2</td><td>0.420545774</td><td>0.075296711</td><td>2.84E-01</td><td>0.570792658</td></tr>
- <tr><td>4</td><td>f</td><td>0</td><td>0.015250795</td><td>0.001526652</td><td>1.25E-02</td><td>0.018550847</td></tr>
- <tr><td>4</td><td>f</td><td>1</td><td>0.017468847</td><td>0.001878183</td><td>1.41E-02</td><td>0.021557576</td></tr>
- <tr><td>4</td><td>f</td><td>2</td><td>0.014610271</td><td>0.002655356</td><td>1.02E-02</td><td>0.020840244</td></tr>
- <tr><td>4</td><td>S</td><td>0</td><td>0.70705115</td><td>0.087270368</td><td>5.14E-01</td><td>0.846435743</td></tr>
- <tr><td>4</td><td>S</td><td>1</td><td>0.560399252</td><td>0.070450177</td><td>4.21E-01</td><td>0.690678025</td></tr>
- <tr><td>4</td><td>S</td><td>2</td><td>0.380773751</td><td>0.069786486</td><td>2.56E-01</td><td>0.52344419</td></tr>
- <tr><td>5</td><td>f</td><td>0</td><td>0.013286065</td><td>0.001381513</td><td>1.08E-02</td><td>0.016284623</td></tr>
- <tr><td>5</td><td>f</td><td>1</td><td>0.014324571</td><td>0.001642646</td><td>1.14E-02</td><td>0.017927579</td></tr>
- <tr><td>5</td><td>f</td><td>2</td><td>0.025375579</td><td>0.00299403</td><td>2.01E-02</td><td>0.03195388</td></tr>
- <tr><td>5</td><td>S</td><td>0</td><td>0.510890081</td><td>0.059730077</td><td>3.95E-01</td><td>0.625292371</td></tr>
- <tr><td>5</td><td>S</td><td>1</td><td>0.421209827</td><td>0.047812497</td><td>3.31E-01</td><td>0.516640402</td></tr>
- <tr><td>5</td><td>S</td><td>2</td><td>0.421364502</td><td>0.072890258</td><td>2.88E-01</td><td>0.566792928</td></tr>
- <tr><td>6</td><td>f</td><td>0</td><td>0.019609941</td><td>0.001738007</td><td>1.65E-02</td><td>0.023322757</td></tr>
- <tr><td>6</td><td>f</td><td>1</td><td>0.015484227</td><td>0.001761231</td><td>1.24E-02</td><td>0.019343148</td></tr>
- <tr><td>6</td><td>f</td><td>2</td><td>0.018813024</td><td>0.002661553</td><td>1.42E-02</td><td>0.024804618</td></tr>
- <tr><td>6</td><td>S</td><td>0</td><td>0.831695173</td><td>0.092864989</td><td>5.74E-01</td><td>0.947747505</td></tr>
- <tr><td>6</td><td>S</td><td>1</td><td>0.564593072</td><td>0.066171805</td><td>4.33E-01</td><td>0.687276257</td></tr>
- <tr><td>6</td><td>S</td><td>2</td><td>0.380944647</td><td>0.065230511</td><td>2.64E-01</td><td>0.514147331</td></tr>
- <tr><td>7</td><td>f</td><td>0</td><td>0.013977195</td><td>0.001340099</td><td>1.16E-02</td><td>0.016862302</td></tr>
- <tr><td>7</td><td>f</td><td>1</td><td>0.014836106</td><td>0.00188518</td><td>1.16E-02</td><td>0.019022216</td></tr>
- <tr><td>7</td><td>f</td><td>2</td><td>0.016974716</td><td>0.002802843</td><td>1.23E-02</td><td>0.02343779</td></tr>
- <tr><td>7</td><td>S</td><td>0</td><td>0.809491004</td><td>0.094863957</td><td>5.60E-01</td><td>0.934157526</td></tr>
- <tr><td>7</td><td>S</td><td>1</td><td>0.617057482</td><td>0.078307926</td><td>4.57E-01</td><td>0.755213174</td></tr>
- <tr><td>7</td><td>S</td><td>2</td><td>0.324357881</td><td>0.068531813</td><td>2.06E-01</td><td>0.469813917</td></tr>
- <tr><td>8</td><td>f</td><td>0</td><td>0.011585193</td><td>0.001144752</td><td>9.54E-03</td><td>0.014057614</td></tr>
- <tr><td>8</td><td>f</td><td>1</td><td>0.014268168</td><td>0.001945597</td><td>1.09E-02</td><td>0.018629192</td></tr>
- <tr><td>8</td><td>f</td><td>2</td><td>0.015153236</td><td>0.003016532</td><td>1.02E-02</td><td>0.02235505</td></tr>
- <tr><td>8</td><td>S</td><td>0</td><td>0.779572588</td><td>0.091782118</td><td>5.54E-01</td><td>0.909705593</td></tr>
- <tr><td>8</td><td>S</td><td>1</td><td>0.678621089</td><td>0.087515067</td><td>4.90E-01</td><td>0.822581155</td></tr>
- <tr><td>8</td><td>S</td><td>2</td><td>0.489331289</td><td>0.088796438</td><td>3.23E-01</td><td>0.657866238</td></tr>
- <tr><td>9</td><td>f</td><td>0</td><td>0.012493413</td><td>0.001183494</td><td>1.04E-02</td><td>0.015038886</td></tr>
- <tr><td>9</td><td>f</td><td>1</td><td>0.018760183</td><td>0.002159794</td><td>1.50E-02</td><td>0.0234967</td></tr>
- <tr><td>9</td><td>f</td><td>2</td><td>0.015572127</td><td>0.003241273</td><td>1.03E-02</td><td>0.023381321</td></tr>
- <tr><td>9</td><td>S</td><td>0</td><td>0.707860778</td><td>0.083868227</td><td>5.23E-01</td><td>0.842894339</td></tr>
- <tr><td>9</td><td>S</td><td>1</td><td>0.620918962</td><td>0.082406497</td><td>4.52E-01</td><td>0.764884921</td></tr>
- <tr><td>9</td><td>S</td><td>2</td><td>0.468000592</td><td>0.088935829</td><td>3.04E-01</td><td>0.639213395</td></tr>
- <tr><td>10</td><td>f</td><td>0</td><td>0.011512346</td><td>0.001111409</td><td>9.53E-03</td><td>0.013907351</td></tr>
- <tr><td>10</td><td>f</td><td>1</td><td>0.019905205</td><td>0.002188566</td><td>1.60E-02</td><td>0.024679565</td></tr>
- <tr><td>10</td><td>f</td><td>2</td><td>0.020817566</td><td>0.00322891</td><td>1.53E-02</td><td>0.028182914</td></tr>
- <tr><td>10</td><td>S</td><td>0</td><td>0.763984855</td><td>0.087782308</td><td>5.55E-01</td><td>0.893675772</td></tr>
- <tr><td>10</td><td>S</td><td>1</td><td>0.911148408</td><td>0.117728151</td><td>3.72E-01</td><td>0.994392251</td></tr>
- <tr><td>10</td><td>S</td><td>2</td><td>0.280269633</td><td>0.060856557</td><td>1.77E-01</td><td>0.412943248</td></tr>
- <tr><td>11</td><td>f</td><td>0</td><td>0.010400722</td><td>0.00099445</td><td>8.62E-03</td><td>0.012541978</td></tr>
- <tr><td>11</td><td>f</td><td>1</td><td>0.020310057</td><td>0.002455534</td><td>1.60E-02</td><td>0.02572479</td></tr>
- <tr><td>11</td><td>f</td><td>2</td><td>0.012409904</td><td>0.003765849</td><td>6.83E-03</td><td>0.022433148</td></tr>
- <tr><td>11</td><td>S</td><td>0</td><td>0.980161147</td><td>0.072619756</td><td>3.17E-02</td><td>0.999986595</td></tr>
- <tr><td>11</td><td>S</td><td>1</td><td>0.789755901</td><td>0.114850767</td><td>4.92E-01</td><td>0.935787162</td></tr>
- <tr><td>11</td><td>S</td><td>2</td><td>0.453565959</td><td>0.110065284</td><td>2.58E-01</td><td>0.664663376</td></tr>
- <tr><td>12</td><td>f</td><td>0</td><td>0.007834395</td><td>0.000704741</td><td>6.57E-03</td><td>0.009343722</td></tr>
- <tr><td>12</td><td>f</td><td>1</td><td>0.017673477</td><td>0.002078666</td><td>1.40E-02</td><td>0.022244042</td></tr>
- <tr><td>12</td><td>f</td><td>2</td><td>0.01694566</td><td>0.003074915</td><td>1.19E-02</td><td>0.024153749</td></tr>
- <tr><td>12</td><td>S</td><td>0</td><td>0.593290474</td><td>0.0718313</td><td>4.49E-01</td><td>0.723332839</td></tr>
- <tr><td>12</td><td>S</td><td>1</td><td>0.786305049</td><td>0.111672862</td><td>5.00E-01</td><td>0.931209411</td></tr>
- <tr><td>12</td><td>S</td><td>2</td><td>0.307844975</td><td>0.076386315</td><td>1.81E-01</td><td>0.473133834</td></tr>
- <tr><td>13</td><td>f</td><td>0</td><td>0.009894397</td><td>0.001021526</td><td>8.08E-03</td><td>0.012110899</td></tr>
- <tr><td>13</td><td>f</td><td>1</td><td>0.015124011</td><td>0.001819485</td><td>1.19E-02</td><td>0.019136898</td></tr>
- <tr><td>13</td><td>f</td><td>2</td><td>0.016182179</td><td>0.003393604</td><td>1.07E-02</td><td>0.024369942</td></tr>
- <tr><td>13</td><td>S</td><td>0</td><td>0.614162216</td><td>0.082280559</td><td>4.46E-01</td><td>0.758669805</td></tr>
- <tr><td>13</td><td>S</td><td>1</td><td>0.70063009</td><td>0.099885687</td><td>4.79E-01</td><td>0.856151723</td></tr>
- <tr><td>13</td><td>S</td><td>2</td><td>0.519669616</td><td>0.10978194</td><td>3.14E-01</td><td>0.719249826</td></tr>
- <tr><td>14</td><td>f</td><td>0</td><td>0.009794613</td><td>0.001040679</td><td>7.95E-03</td><td>0.0120595</td></tr>
- <tr><td>14</td><td>f</td><td>1</td><td>0.016311647</td><td>0.00178588</td><td>1.32E-02</td><td>0.020207621</td></tr>
- <tr><td>14</td><td>f</td><td>2</td><td>0.01620106</td><td>0.003005617</td><td>1.13E-02</td><td>0.023276984</td></tr>
- <tr><td>14</td><td>S</td><td>0</td><td>0.687144635</td><td>0.09489939</td><td>4.80E-01</td><td>0.839164703</td></tr>
- <tr><td>14</td><td>S</td><td>1</td><td>0.69393253</td><td>0.099357804</td><td>4.75E-01</td><td>0.850111098</td></tr>
- <tr><td>14</td><td>S</td><td>2</td><td>0.381078283</td><td>0.088733361</td><td>2.28E-01</td><td>0.562769337</td></tr>
- <tr><td>15</td><td>f</td><td>0</td><td>0.009414082</td><td>0.001031668</td><td>7.59E-03</td><td>0.011666983</td></tr>
- <tr><td>15</td><td>f</td><td>1</td><td>0.016046862</td><td>0.001849818</td><td>1.28E-02</td><td>0.020105742</td></tr>
- <tr><td>15</td><td>f</td><td>2</td><td>0.013761645</td><td>0.003365154</td><td>8.51E-03</td><td>0.022181978</td></tr>
- <tr><td>15</td><td>S</td><td>0</td><td>0.543785509</td><td>0.074491876</td><td>3.98E-01</td><td>0.682247857</td></tr>
- <tr><td>15</td><td>S</td><td>1</td><td>0.535893377</td><td>0.078994056</td><td>3.83E-01</td><td>0.682729142</td></tr>
- <tr><td>15</td><td>S</td><td>2</td><td>0.570942397</td><td>0.120038274</td><td>3.37E-01</td><td>0.776629575</td></tr>
- <tr><td>16</td><td>f</td><td>0</td><td>0.01136957</td><td>0.001183901</td><td>9.27E-03</td><td>0.0139402</td></tr>
- <tr><td>16</td><td>f</td><td>1</td><td>0.015004393</td><td>0.001719241</td><td>1.20E-02</td><td>0.01877471</td></tr>
- <tr><td>16</td><td>f</td><td>2</td><td>0.013192553</td><td>0.002892707</td><td>8.57E-03</td><td>0.020246653</td></tr>
- <tr><td>16</td><td>S</td><td>0</td><td>0.64157852</td><td>0.083667394</td><td>4.67E-01</td><td>0.785051621</td></tr>
- <tr><td>16</td><td>S</td><td>1</td><td>0.537779336</td><td>0.077228942</td><td>3.88E-01</td><td>0.681431323</td></tr>
- <tr><td>16</td><td>S</td><td>2</td><td>0.467818642</td><td>0.104360074</td><td>2.79E-01</td><td>0.666563469</td></tr>
- <tr><td>17</td><td>f</td><td>0</td><td>0.011698225</td><td>0.001164555</td><td>9.62E-03</td><td>0.014215233</td></tr>
- <tr><td>17</td><td>f</td><td>1</td><td>0.011017616</td><td>0.001403334</td><td>8.58E-03</td><td>0.014136594</td></tr>
- <tr><td>17</td><td>f</td><td>2</td><td>0.015648404</td><td>0.002887848</td><td>1.09E-02</td><td>0.022441324</td></tr>
- <tr><td>17</td><td>S</td><td>0</td><td>0.775597088</td><td>0.101099907</td><td>5.25E-01</td><td>0.915189669</td></tr>
- <tr><td>17</td><td>S</td><td>1</td><td>0.608743166</td><td>0.08998203</td><td>4.26E-01</td><td>0.765399972</td></tr>
- <tr><td>17</td><td>S</td><td>2</td><td>0.466810593</td><td>0.117657909</td><td>2.57E-01</td><td>0.688596776</td></tr>
- <tr><td>18</td><td>f</td><td>0</td><td>0.010227068</td><td>0.001051046</td><td>8.36E-03</td><td>0.012506454</td></tr>
- <tr><td>18</td><td>f</td><td>1</td><td>0.011441753</td><td>0.001444919</td><td>8.93E-03</td><td>0.014649439</td></tr>
- <tr><td>18</td><td>f</td><td>2</td><td>0.017490946</td><td>0.00291762</td><td>1.26E-02</td><td>0.02422934</td></tr>
- <tr><td>18</td><td>S</td><td>0</td><td>0.954979194</td><td>0.122689665</td><td>7.32E-02</td><td>0.999824504</td></tr>
- <tr><td>18</td><td>S</td><td>1</td><td>0.842087719</td><td>0.151787345</td><td>3.63E-01</td><td>0.980374684</td></tr>
- <tr><td>18</td><td>S</td><td>2</td><td>0.387592498</td><td>0.119558818</td><td>1.91E-01</td><td>0.629435184</td></tr>
- <tr><td>19</td><td>f</td><td>0</td><td>0.006738158</td><td>0.000851781</td><td>5.26E-03</td><td>0.00863071</td></tr>
- <tr><td>19</td><td>f</td><td>1</td><td>0.010787732</td><td>0.001396884</td><td>8.37E-03</td><td>0.013899098</td></tr>
- <tr><td>19</td><td>f</td><td>2</td><td>0.011069474</td><td>0.003843054</td><td>5.59E-03</td><td>0.02178833</td></tr>
- <tr><td>19</td><td>S</td><td>0</td><td>0.549028619</td><td>0.111941564</td><td>3.34E-01</td><td>0.747040312</td></tr>
- <tr><td>19</td><td>S</td><td>1</td><td>0.738888127</td><td>0.169222158</td><td>3.37E-01</td><td>0.940437818</td></tr>
- <tr><td>19</td><td>S</td><td>2</td><td>0.756759494</td><td>0.243292823</td><td>1.89E-01</td><td>0.97646712</td></tr>
- <tr><td>20</td><td>f</td><td>0</td><td>0.008870422</td><td>0.001377301</td><td>6.54E-03</td><td>0.012020218</td></tr>
- <tr><td>20</td><td>f</td><td>1</td><td>0.027759908</td><td>0.001987004</td><td>2.41E-02</td><td>0.031931466</td></tr>
- <tr><td>20</td><td>f</td><td>2</td><td>0.000130914</td><td>0.000467743</td><td>1.19E-07</td><td>0.125975224</td></tr>
- <tr><td>20</td><td>S</td><td>0</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td></tr>
- <tr><td>20</td><td>S</td><td>1</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td></tr>
- <tr><td>20</td><td>S</td><td>2</td><td>0.999200358</td><td>0.002922354</td><td>4.90E-01</td><td>0.999999384</td></tr>
+<tr><th>time</th><th>Param</th><th>Age</th><th>Estim</th><th>StdErr</th><th>Lower</th><th>Upper</th></tr>
+<tr><td>1</td><td>f</td><td>0</td><td>0.020620572</td><td>0.00326796</td><td>0.015100796</td><td>0.02810042</td></tr>
+<tr><td>1</td><td>f</td><td>1</td><td>0.02724635</td><td>0.002517014</td><td>0.022724003</td><td>0.032638639</td></tr>
+<tr><td>1</td><td>f</td><td>2</td><td>0.014888183</td><td>0.004525355</td><td>0.008187341</td><td>0.026924381</td></tr>
+<tr><td>1</td><td>S</td><td>0</td><td>0.624603463</td><td>0.093868842</td><td>0.431550391</td><td>0.784789104</td></tr>
+<tr><td>1</td><td>S</td><td>1</td><td>0.480583989</td><td>0.061564052</td><td>0.36329432</td><td>0.600053485</td></tr>
+<tr><td>1</td><td>S</td><td>2</td><td>0.481336746</td><td>0.098501786</td><td>0.299848546</td><td>0.667887004</td></tr>
+<tr><td>2</td><td>f</td><td>0</td><td>0.018227759</td><td>0.00211285</td><td>0.014516836</td><td>0.022865291</td></tr>
+<tr><td>2</td><td>f</td><td>1</td><td>0.021081746</td><td>0.00216284</td><td>0.017234567</td><td>0.025765194</td></tr>
+<tr><td>2</td><td>f</td><td>2</td><td>0.016706641</td><td>0.003950938</td><td>0.010493033</td><td>0.026501185</td></tr>
+<tr><td>2</td><td>S</td><td>0</td><td>0.807576247</td><td>0.10904608</td><td>0.51473415</td><td>0.94319889</td></tr>
+<tr><td>2</td><td>S</td><td>1</td><td>0.595142625</td><td>0.078567141</td><td>0.436878261</td><td>0.735823673</td></tr>
+<tr><td>2</td><td>S</td><td>2</td><td>0.650237698</td><td>0.102701007</td><td>0.434134475</td><td>0.818344376</td></tr>
+<tr><td>3</td><td>f</td><td>0</td><td>0.011853892</td><td>0.001434927</td><td>0.009347261</td><td>0.015022526</td></tr>
+<tr><td>3</td><td>f</td><td>1</td><td>0.017701244</td><td>0.002096998</td><td>0.01402709</td><td>0.022315998</td></tr>
+<tr><td>3</td><td>f</td><td>2</td><td>0.017064733</td><td>0.002853268</td><td>0.012285962</td><td>0.023657744</td></tr>
+<tr><td>3</td><td>S</td><td>0</td><td>0.709443393</td><td>0.091744091</td><td>0.505085456</td><td>0.853837522</td></tr>
+<tr><td>3</td><td>S</td><td>1</td><td>0.532050964</td><td>0.069281535</td><td>0.397228031</td><td>0.66235089</td></tr>
+<tr><td>3</td><td>S</td><td>2</td><td>0.420540405</td><td>0.075298063</td><td>0.283698803</td><td>0.570790444</td></tr>
+<tr><td>4</td><td>f</td><td>0</td><td>0.015249382</td><td>0.001526901</td><td>0.01252851</td><td>0.018550059</td></tr>
+<tr><td>4</td><td>f</td><td>1</td><td>0.017466549</td><td>0.001878009</td><td>0.014142422</td><td>0.021554918</td></tr>
+<tr><td>4</td><td>f</td><td>2</td><td>0.014608305</td><td>0.002655717</td><td>0.010220874</td><td>0.020839437</td></tr>
+<tr><td>4</td><td>S</td><td>0</td><td>0.707270982</td><td>0.087407716</td><td>0.513669792</td><td>0.846789624</td></tr>
+<tr><td>4</td><td>S</td><td>1</td><td>0.561278578</td><td>0.070722705</td><td>0.421512255</td><td>0.691954766</td></tr>
+<tr><td>4</td><td>S</td><td>2</td><td>0.380988487</td><td>0.069834945</td><td>0.25621358</td><td>0.523740411</td></tr>
+<tr><td>5</td><td>f</td><td>0</td><td>0.013278484</td><td>0.0013824</td><td>0.010824699</td><td>0.016279347</td></tr>
+<tr><td>5</td><td>f</td><td>1</td><td>0.014326386</td><td>0.001642738</td><td>0.011438877</td><td>0.017929566</td></tr>
+<tr><td>5</td><td>f</td><td>2</td><td>0.025387216</td><td>0.002992743</td><td>0.020136771</td><td>0.031962002</td></tr>
+<tr><td>5</td><td>S</td><td>0</td><td>0.511076352</td><td>0.059917452</td><td>0.395160576</td><td>0.625813044</td></tr>
+<tr><td>5</td><td>S</td><td>1</td><td>0.422243771</td><td>0.047999706</td><td>0.331986652</td><td>0.518010938</td></tr>
+<tr><td>5</td><td>S</td><td>2</td><td>0.420358019</td><td>0.072705952</td><td>0.287786865</td><td>0.565508595</td></tr>
+<tr><td>6</td><td>f</td><td>0</td><td>0.019596401</td><td>0.001739481</td><td>0.016462414</td><td>0.02331287</td></tr>
+<tr><td>6</td><td>f</td><td>1</td><td>0.015452418</td><td>0.001758787</td><td>0.01235815</td><td>0.019306292</td></tr>
+<tr><td>6</td><td>f</td><td>2</td><td>0.018864571</td><td>0.002659881</td><td>0.014299951</td><td>0.024849511</td></tr>
+<tr><td>6</td><td>S</td><td>0</td><td>0.832172207</td><td>0.093586613</td><td>0.571436389</td><td>0.948558</td></tr>
+<tr><td>6</td><td>S</td><td>1</td><td>0.566362655</td><td>0.066719844</td><td>0.434027541</td><td>0.689865268</td></tr>
+<tr><td>6</td><td>S</td><td>2</td><td>0.380841636</td><td>0.065195945</td><td>0.263493067</td><td>0.513980531</td></tr>
+<tr><td>7</td><td>f</td><td>0</td><td>0.013955211</td><td>0.001343914</td><td>0.011552063</td><td>0.016849758</td></tr>
+<tr><td>7</td><td>f</td><td>1</td><td>0.014821229</td><td>0.001883984</td><td>0.011547703</td><td>0.019004889</td></tr>
+<tr><td>7</td><td>f</td><td>2</td><td>0.016990285</td><td>0.002803399</td><td>0.012285584</td><td>0.023453847</td></tr>
+<tr><td>7</td><td>S</td><td>0</td><td>0.805652042</td><td>0.095316687</td><td>0.556962872</td><td>0.931830811</td></tr>
+<tr><td>7</td><td>S</td><td>1</td><td>0.613351603</td><td>0.077836335</td><td>0.454655882</td><td>0.751143706</td></tr>
+<tr><td>7</td><td>S</td><td>2</td><td>0.325103631</td><td>0.068659287</td><td>0.206894325</td><td>0.470762893</td></tr>
+<tr><td>8</td><td>f</td><td>0</td><td>0.011621286</td><td>0.001151244</td><td>0.0095684</td><td>0.014108341</td></tr>
+<tr><td>8</td><td>f</td><td>1</td><td>0.014250618</td><td>0.001945327</td><td>0.010900072</td><td>0.018611701</td></tr>
+<tr><td>8</td><td>f</td><td>2</td><td>0.015146578</td><td>0.003015126</td><td>0.01024282</td><td>0.02234501</td></tr>
+<tr><td>8</td><td>S</td><td>0</td><td>0.784604153</td><td>0.093474363</td><td>0.551967533</td><td>0.91503945</td></tr>
+<tr><td>8</td><td>S</td><td>1</td><td>0.681054016</td><td>0.088072204</td><td>0.490984134</td><td>0.825390867</td></tr>
+<tr><td>8</td><td>S</td><td>2</td><td>0.488172887</td><td>0.088559726</td><td>0.322563844</td><td>0.656419735</td></tr>
+<tr><td>9</td><td>f</td><td>0</td><td>0.012457201</td><td>0.001186488</td><td>0.01033371</td><td>0.015010432</td></tr>
+<tr><td>9</td><td>f</td><td>1</td><td>0.018763421</td><td>0.002160632</td><td>0.014965683</td><td>0.02350189</td></tr>
+<tr><td>9</td><td>f</td><td>2</td><td>0.015570454</td><td>0.003239987</td><td>0.010343642</td><td>0.023376074</td></tr>
+<tr><td>9</td><td>S</td><td>0</td><td>0.704512186</td><td>0.083900772</td><td>0.51972434</td><td>0.840079234</td></tr>
+<tr><td>9</td><td>S</td><td>1</td><td>0.619521319</td><td>0.082148658</td><td>0.451265093</td><td>0.763252446</td></tr>
+<tr><td>9</td><td>S</td><td>2</td><td>0.466904523</td><td>0.088675018</td><td>0.303465967</td><td>0.637769385</td></tr>
+<tr><td>10</td><td>f</td><td>0</td><td>0.011532145</td><td>0.001114148</td><td>0.009540839</td><td>0.013933219</td></tr>
+<tr><td>10</td><td>f</td><td>1</td><td>0.019893838</td><td>0.002188409</td><td>0.016028387</td><td>0.024668123</td></tr>
+<tr><td>10</td><td>f</td><td>2</td><td>0.020735111</td><td>0.003230454</td><td>0.015265145</td><td>0.028109183</td></tr>
+<tr><td>10</td><td>S</td><td>0</td><td>0.760874473</td><td>0.084805053</td><td>0.560678467</td><td>0.888056739</td></tr>
+<tr><td>10</td><td>S</td><td>1</td><td>0.895863641</td><td>0.103135304</td><td>0.496321451</td><td>0.986860277</td></tr>
+<tr><td>10</td><td>S</td><td>2</td><td>0.283709408</td><td>0.0609293</td><td>0.180378362</td><td>0.416177607</td></tr>
+<tr><td>11</td><td>f</td><td>0</td><td>0.010469273</td><td>0.00095267</td><td>0.008757691</td><td>0.012511142</td></tr>
+<tr><td>11</td><td>f</td><td>1</td><td>0.020308373</td><td>0.002455981</td><td>0.016013981</td><td>0.025724264</td></tr>
+<tr><td>11</td><td>f</td><td>2</td><td>0.012476139</td><td>0.003756021</td><td>0.006902755</td><td>0.022447836</td></tr>
+<tr><td>11</td><td>S</td><td>0</td><td>0.986786501</td><td>0.060193371</td><td>0.008705843</td><td>0.999998425</td></tr>
+<tr><td>11</td><td>S</td><td>1</td><td>0.795197669</td><td>0.115424863</td><td>0.49185254</td><td>0.939669114</td></tr>
+<tr><td>11</td><td>S</td><td>2</td><td>0.449472291</td><td>0.109270016</td><td>0.255722929</td><td>0.659869487</td></tr>
+<tr><td>12</td><td>f</td><td>0</td><td>0.007830095</td><td>0.000682289</td><td>0.006600054</td><td>0.009287233</td></tr>
+<tr><td>12</td><td>f</td><td>1</td><td>0.017659289</td><td>0.00207724</td><td>0.014016932</td><td>0.022226791</td></tr>
+<tr><td>12</td><td>f</td><td>2</td><td>0.016948813</td><td>0.003078569</td><td>0.011860454</td><td>0.024166784</td></tr>
+<tr><td>12</td><td>S</td><td>0</td><td>0.591903727</td><td>0.070245765</td><td>0.450625704</td><td>0.71946809</td></tr>
+<tr><td>12</td><td>S</td><td>1</td><td>0.781470184</td><td>0.109959798</td><td>0.50305812</td><td>0.926646126</td></tr>
+<tr><td>12</td><td>S</td><td>2</td><td>0.310547963</td><td>0.076878672</td><td>0.182227799</td><td>0.476569353</td></tr>
+<tr><td>13</td><td>f</td><td>0</td><td>0.009907266</td><td>0.001018998</td><td>0.008096929</td><td>0.012117419</td></tr>
+<tr><td>13</td><td>f</td><td>1</td><td>0.015117346</td><td>0.001819383</td><td>0.011936008</td><td>0.019130197</td></tr>
+<tr><td>13</td><td>f</td><td>2</td><td>0.016234973</td><td>0.003383466</td><td>0.010777739</td><td>0.024387316</td></tr>
+<tr><td>13</td><td>S</td><td>0</td><td>0.616077065</td><td>0.082451968</td><td>0.447613661</td><td>0.760637477</td></tr>
+<tr><td>13</td><td>S</td><td>1</td><td>0.703043712</td><td>0.100202896</td><td>0.480288149</td><td>0.858459855</td></tr>
+<tr><td>13</td><td>S</td><td>2</td><td>0.515401672</td><td>0.108648868</td><td>0.311956148</td><td>0.713867486</td></tr>
+<tr><td>14</td><td>f</td><td>0</td><td>0.009785409</td><td>0.001040642</td><td>0.007942698</td><td>0.012050437</td></tr>
+<tr><td>14</td><td>f</td><td>1</td><td>0.016294586</td><td>0.001784785</td><td>0.013141737</td><td>0.020188364</td></tr>
+<tr><td>14</td><td>f</td><td>2</td><td>0.016262046</td><td>0.002998225</td><td>0.011319286</td><td>0.023312255</td></tr>
+<tr><td>14</td><td>S</td><td>0</td><td>0.688268154</td><td>0.095091021</td><td>0.480849708</td><td>0.840333155</td></tr>
+<tr><td>14</td><td>S</td><td>1</td><td>0.697509992</td><td>0.100000409</td><td>0.476644497</td><td>0.853763274</td></tr>
+<tr><td>14</td><td>S</td><td>2</td><td>0.378368923</td><td>0.088093103</td><td>0.226082042</td><td>0.559125511</td></tr>
+<tr><td>15</td><td>f</td><td>0</td><td>0.009392125</td><td>0.00103012</td><td>0.00757381</td><td>0.011641859</td></tr>
+<tr><td>15</td><td>f</td><td>1</td><td>0.016034681</td><td>0.001849049</td><td>0.012785968</td><td>0.020092041</td></tr>
+<tr><td>15</td><td>f</td><td>2</td><td>0.013723335</td><td>0.003375844</td><td>0.008461811</td><td>0.022183261</td></tr>
+<tr><td>15</td><td>S</td><td>0</td><td>0.542048409</td><td>0.074161757</td><td>0.397240197</td><td>0.680084752</td></tr>
+<tr><td>15</td><td>S</td><td>1</td><td>0.53623714</td><td>0.079313568</td><td>0.382276073</td><td>0.683586841</td></tr>
+<tr><td>15</td><td>S</td><td>2</td><td>0.573831705</td><td>0.121122372</td><td>0.337766223</td><td>0.780446162</td></tr>
+<tr><td>16</td><td>f</td><td>0</td><td>0.011370943</td><td>0.001183932</td><td>0.009269819</td><td>0.013941614</td></tr>
+<tr><td>16</td><td>f</td><td>1</td><td>0.015010764</td><td>0.001720244</td><td>0.011986639</td><td>0.018783345</td></tr>
+<tr><td>16</td><td>f</td><td>2</td><td>0.01319379</td><td>0.002890717</td><td>0.008578347</td><td>0.020241798</td></tr>
+<tr><td>16</td><td>S</td><td>0</td><td>0.643225149</td><td>0.083928678</td><td>0.46818589</td><td>0.786877993</td></tr>
+<tr><td>16</td><td>S</td><td>1</td><td>0.540539191</td><td>0.077710135</td><td>0.389178783</td><td>0.684772586</td></tr>
+<tr><td>16</td><td>S</td><td>2</td><td>0.465646312</td><td>0.103891623</td><td>0.277678728</td><td>0.66390429</td></tr>
+<tr><td>17</td><td>f</td><td>0</td><td>0.011669547</td><td>0.001163068</td><td>0.009596746</td><td>0.014183641</td></tr>
+<tr><td>17</td><td>f</td><td>1</td><td>0.011012977</td><td>0.001402732</td><td>0.008577199</td><td>0.014130616</td></tr>
+<tr><td>17</td><td>f</td><td>2</td><td>0.01569785</td><td>0.002883087</td><td>0.010942197</td><td>0.022473423</td></tr>
+<tr><td>17</td><td>S</td><td>0</td><td>0.768951477</td><td>0.100335395</td><td>0.523857083</td><td>0.909644289</td></tr>
+<tr><td>17</td><td>S</td><td>1</td><td>0.606923874</td><td>0.089986192</td><td>0.424359949</td><td>0.763813277</td></tr>
+<tr><td>17</td><td>S</td><td>2</td><td>0.464514163</td><td>0.117027546</td><td>0.256484162</td><td>0.685671141</td></tr>
+<tr><td>18</td><td>f</td><td>0</td><td>0.010275282</td><td>0.001057137</td><td>0.008397177</td><td>0.012568117</td></tr>
+<tr><td>18</td><td>f</td><td>1</td><td>0.011446412</td><td>0.001445249</td><td>0.008934097</td><td>0.014654757</td></tr>
+<tr><td>18</td><td>f</td><td>2</td><td>0.017492654</td><td>0.002917075</td><td>0.012604763</td><td>0.024229465</td></tr>
+<tr><td>18</td><td>S</td><td>0</td><td>0.979444123</td><td>0.130051059</td><td>0.000151199</td><td>0.999999933</td></tr>
+<tr><td>18</td><td>S</td><td>1</td><td>0.858541182</td><td>0.15739088</td><td>0.323696208</td><td>0.987172949</td></tr>
+<tr><td>18</td><td>S</td><td>2</td><td>0.386850339</td><td>0.119428121</td><td>0.190398053</td><td>0.628615882</td></tr>
+<tr><td>19</td><td>f</td><td>0</td><td>0.006617569</td><td>0.000854957</td><td>0.005136177</td><td>0.008522568</td></tr>
+<tr><td>19</td><td>f</td><td>1</td><td>0.010775288</td><td>0.001396166</td><td>0.008355939</td><td>0.013885319</td></tr>
+<tr><td>19</td><td>f</td><td>2</td><td>0.011178328</td><td>0.003789609</td><td>0.005740135</td><td>0.021656436</td></tr>
+<tr><td>19</td><td>S</td><td>0</td><td>0.543224032</td><td>0.112473712</td><td>0.328471886</td><td>0.743027155</td></tr>
+<tr><td>19</td><td>S</td><td>1</td><td>0.74757256</td><td>0.172103294</td><td>0.331406462</td><td>0.946507922</td></tr>
+<tr><td>19</td><td>S</td><td>2</td><td>0.747192979</td><td>0.236785853</td><td>0.20210064</td><td>0.971821443</td></tr>
+<tr><td>20</td><td>f</td><td>0</td><td>0.00881416</td><td>0.001380322</td><td>0.006482062</td><td>0.01197518</td></tr>
+<tr><td>20</td><td>f</td><td>1</td><td>0.0277971</td><td>0.001979661</td><td>0.024169162</td><td>0.031951781</td></tr>
+<tr><td>20</td><td>f</td><td>2</td><td>5.22358E-05</td><td>0.000297709</td><td>7.3514E-10</td><td>0.78777731</td></tr>
+<tr><td>20</td><td>S</td><td>0</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td></tr>
+<tr><td>20</td><td>S</td><td>1</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td></tr>
+<tr><td>20</td><td>S</td><td>2</td><td>0.99968889</td><td>0.001820684</td><td>0.03233041</td><td>0.999999997</td></tr>
+</table>
+</details>
+
+The tables below contain final $f$ and $f'$ estimates at the bottom.
+
+<details>
+<summary>M<sub>sep</sub> (GLM) [Seber]</summary>
+<table style="margin: 0 auto; border-collapse: collapse; width: auto;">
+<tr><th>time</th><th>Param</th><th>Age</th><th>Estim</th><th>StdErr</th><th>Lower</th><th>Upper</th></tr>
+<tr><td>1</td><td>r</td><td>0</td><td>0.05524551</td><td>0.016310503</td><td>0.030719989</td><td>0.09738393</td></tr>
+<tr><td>1</td><td>r</td><td>1</td><td>0.05227175</td><td>0.008388743</td><td>0.03807027</td><td>0.07137776</td></tr>
+<tr><td>1</td><td>r</td><td>2</td><td>0.03367075</td><td>0.005452455</td><td>0.024474943</td><td>0.04615815</td></tr>
+<tr><td>1</td><td>S</td><td>0</td><td>0.62641053</td><td>0.094403929</td><td>0.431970399</td><td>0.78709675</td></tr>
+<tr><td>1</td><td>S</td><td>1</td><td>0.50954237</td><td>0.062827738</td><td>0.388273615</td><td>0.62969838</td></tr>
+<tr><td>1</td><td>S</td><td>2</td><td>0.3546265</td><td>0.057203227</td><td>0.25187272</td><td>0.47280713</td></tr>
+<tr><td>2</td><td>r</td><td>0</td><td>0.09427317</td><td>0.057293314</td><td>0.027180748</td><td>0.27940942</td></tr>
+<tr><td>2</td><td>r</td><td>1</td><td>0.05279725</td><td>0.012903746</td><td>0.032521787</td><td>0.08460787</td></tr>
+<tr><td>2</td><td>r</td><td>2</td><td>0.04784009</td><td>0.008980648</td><td>0.033012763</td><td>0.06885277</td></tr>
+<tr><td>2</td><td>S</td><td>0</td><td>0.80662301</td><td>0.109131359</td><td>0.514226634</td><td>0.94264922</td></tr>
+<tr><td>2</td><td>S</td><td>1</td><td>0.6289704</td><td>0.079854919</td><td>0.464339841</td><td>0.76825569</td></tr>
+<tr><td>2</td><td>S</td><td>2</td><td>0.54753724</td><td>0.068220897</td><td>0.413623598</td><td>0.67490523</td></tr>
+<tr><td>3</td><td>r</td><td>0</td><td>0.04074396</td><td>0.015751267</td><td>0.018914079</td><td>0.08557147</td></tr>
+<tr><td>3</td><td>r</td><td>1</td><td>0.03761295</td><td>0.007189248</td><td>0.025797548</td><td>0.05453691</td></tr>
+<tr><td>3</td><td>r</td><td>2</td><td>0.02986488</td><td>0.004314621</td><td>0.022474717</td><td>0.03958667</td></tr>
+<tr><td>3</td><td>S</td><td>0</td><td>0.70905381</td><td>0.091893381</td><td>0.50443097</td><td>0.85369266</td></tr>
+<tr><td>3</td><td>S</td><td>1</td><td>0.53867265</td><td>0.067076824</td><td>0.407563475</td><td>0.66464143</td></tr>
+<tr><td>3</td><td>S</td><td>2</td><td>0.40187566</td><td>0.055425493</td><td>0.299517261</td><td>0.51356812</td></tr>
+<tr><td>4</td><td>r</td><td>0</td><td>0.05226922</td><td>0.018500782</td><td>0.025839555</td><td>0.10287727</td></tr>
+<tr><td>4</td><td>r</td><td>1</td><td>0.03958764</td><td>0.007840128</td><td>0.026778462</td><td>0.05815779</td></tr>
+<tr><td>4</td><td>r</td><td>2</td><td>0.02461991</td><td>0.003512182</td><td>0.018597866</td><td>0.03252728</td></tr>
+<tr><td>4</td><td>S</td><td>0</td><td>0.70800012</td><td>0.087301824</td><td>0.514498213</td><td>0.84727322</td></tr>
+<tr><td>4</td><td>S</td><td>1</td><td>0.57211239</td><td>0.06962666</td><td>0.433645236</td><td>0.70013561</td></tr>
+<tr><td>4</td><td>S</td><td>2</td><td>0.3481716</td><td>0.05032984</td><td>0.256974935</td><td>0.45204274</td></tr>
+<tr><td>5</td><td>r</td><td>0</td><td>0.02722295</td><td>0.005347938</td><td>0.01848911</td><td>0.03991468</td></tr>
+<tr><td>5</td><td>r</td><td>1</td><td>0.02526435</td><td>0.003416551</td><td>0.019365686</td><td>0.03289943</td></tr>
+<tr><td>5</td><td>r</td><td>2</td><td>0.04411383</td><td>0.006448571</td><td>0.033066751</td><td>0.0586278</td></tr>
+<tr><td>5</td><td>S</td><td>0</td><td>0.51236149</td><td>0.059384406</td><td>0.397377929</td><td>0.62605149</td></tr>
+<tr><td>5</td><td>S</td><td>1</td><td>0.41553617</td><td>0.045706515</td><td>0.329600952</td><td>0.50693455</td></tr>
+<tr><td>5</td><td>S</td><td>2</td><td>0.45087381</td><td>0.060421162</td><td>0.337275306</td><td>0.56983515</td></tr>
+<tr><td>6</td><td>r</td><td>0</td><td>0.11453432</td><td>0.06444119</td><td>0.035893382</td><td>0.310062</td></tr>
+<tr><td>6</td><td>r</td><td>1</td><td>0.03570303</td><td>0.006622739</td><td>0.024766248</td><td>0.05121586</td></tr>
+<tr><td>6</td><td>r</td><td>2</td><td>0.03027378</td><td>0.004184495</td><td>0.023064996</td><td>0.03964419</td></tr>
+<tr><td>6</td><td>S</td><td>0</td><td>0.82928527</td><td>0.088742593</td><td>0.587093416</td><td>0.94316978</td></tr>
+<tr><td>6</td><td>S</td><td>1</td><td>0.56327531</td><td>0.063392383</td><td>0.437670971</td><td>0.6812562</td></tr>
+<tr><td>6</td><td>S</td><td>2</td><td>0.38713889</td><td>0.052263389</td><td>0.290883438</td><td>0.49309735</td></tr>
+<tr><td>7</td><td>r</td><td>0</td><td>0.07205727</td><td>0.036951004</td><td>0.025614566</td><td>0.18658236</td></tr>
+<tr><td>7</td><td>r</td><td>1</td><td>0.03812837</td><td>0.008909461</td><td>0.024031364</td><td>0.05998653</td></tr>
+<tr><td>7</td><td>r</td><td>2</td><td>0.02548076</td><td>0.003843107</td><td>0.018939865</td><td>0.03420181</td></tr>
+<tr><td>7</td><td>S</td><td>0</td><td>0.80635382</td><td>0.089670729</td><td>0.574667594</td><td>0.92771173</td></tr>
+<tr><td>7</td><td>S</td><td>1</td><td>0.61488283</td><td>0.074419898</td><td>0.463045917</td><td>0.74722273</td></tr>
+<tr><td>7</td><td>S</td><td>2</td><td>0.3163</td><td>0.053706068</td><td>0.221389409</td><td>0.42945665</td></tr>
+<tr><td>8</td><td>r</td><td>0</td><td>0.0533765</td><td>0.024421867</td><td>0.021397014</td><td>0.12695136</td></tr>
+<tr><td>8</td><td>r</td><td>1</td><td>0.04473688</td><td>0.014175499</td><td>0.023861765</td><td>0.08233392</td></tr>
+<tr><td>8</td><td>r</td><td>2</td><td>0.03036581</td><td>0.005529936</td><td>0.021212657</td><td>0.04329381</td></tr>
+<tr><td>8</td><td>S</td><td>0</td><td>0.78244584</td><td>0.087996347</td><td>0.56629925</td><td>0.90831112</td></tr>
+<tr><td>8</td><td>S</td><td>1</td><td>0.69311009</td><td>0.085331606</td><td>0.507102679</td><td>0.83215627</td></tr>
+<tr><td>8</td><td>S</td><td>2</td><td>0.45749188</td><td>0.068225367</td><td>0.329770119</td><td>0.59105711</td></tr>
+<tr><td>9</td><td>r</td><td>0</td><td>0.04265665</td><td>0.014252784</td><td>0.021987458</td><td>0.08114372</td></tr>
+<tr><td>9</td><td>r</td><td>1</td><td>0.05023886</td><td>0.01324723</td><td>0.029782993</td><td>0.08353476</td></tr>
+<tr><td>9</td><td>r</td><td>2</td><td>0.03066049</td><td>0.004743868</td><td>0.022610114</td><td>0.04145564</td></tr>
+<tr><td>9</td><td>S</td><td>0</td><td>0.707582</td><td>0.081364409</td><td>0.528201565</td><td>0.83948651</td></tr>
+<tr><td>9</td><td>S</td><td>1</td><td>0.64823762</td><td>0.080717654</td><td>0.479384385</td><td>0.78669409</td></tr>
+<tr><td>9</td><td>S</td><td>2</td><td>0.39731762</td><td>0.059122183</td><td>0.288930965</td><td>0.51681193</td></tr>
+<tr><td>10</td><td>r</td><td>0</td><td>0.05073267</td><td>0.021461764</td><td>0.021826016</td><td>0.11348213</td></tr>
+<tr><td>10</td><td>r</td><td>1</td><td>0.17151312</td><td>0.137100846</td><td>0.03029422</td><td>0.57838648</td></tr>
+<tr><td>10</td><td>r</td><td>2</td><td>0.02697447</td><td>0.004202228</td><td>0.019853469</td><td>0.03655437</td></tr>
+<tr><td>10</td><td>S</td><td>0</td><td>0.77293144</td><td>0.082961396</td><td>0.574066594</td><td>0.89580086</td></tr>
+<tr><td>10</td><td>S</td><td>1</td><td>0.87792697</td><td>0.096004392</td><td>0.554079661</td><td>0.97654002</td></tr>
+<tr><td>10</td><td>S</td><td>2</td><td>0.34236516</td><td>0.052432243</td><td>0.248018532</td><td>0.45107314</td></tr>
+<tr><td>11</td><td>r</td><td>0</td><td>0.1989052</td><td>0.231482706</td><td>0.014195608</td><td>0.81064757</td></tr>
+<tr><td>11</td><td>r</td><td>1</td><td>0.10338734</td><td>0.062459041</td><td>0.029864496</td><td>0.30163641</td></tr>
+<tr><td>11</td><td>r</td><td>2</td><td>0.0247491</td><td>0.004616067</td><td>0.017145061</td><td>0.03560345</td></tr>
+<tr><td>11</td><td>S</td><td>0</td><td>0.94824862</td><td>0.05886078</td><td>0.635814879</td><td>0.99482685</td></tr>
+<tr><td>11</td><td>S</td><td>1</td><td>0.81253265</td><td>0.109048897</td><td>0.515839567</td><td>0.9463293</td></tr>
+<tr><td>11</td><td>S</td><td>2</td><td>0.37768417</td><td>0.06762882</td><td>0.256669914</td><td>0.51613703</td></tr>
+<tr><td>12</td><td>r</td><td>0</td><td>0.02033283</td><td>0.00461035</td><td>0.013014147</td><td>0.03163534</td></tr>
+<tr><td>12</td><td>r</td><td>1</td><td>0.08773973</td><td>0.050815043</td><td>0.026965166</td><td>0.25025984</td></tr>
+<tr><td>12</td><td>r</td><td>2</td><td>0.02542478</td><td>0.003780837</td><td>0.018977401</td><td>0.03398669</td></tr>
+<tr><td>12</td><td>S</td><td>0</td><td>0.60707478</td><td>0.070699176</td><td>0.463592049</td><td>0.734184</td></tr>
+<tr><td>12</td><td>S</td><td>1</td><td>0.80503904</td><td>0.109492339</td><td>0.512686168</td><td>0.94188324</td></tr>
+<tr><td>12</td><td>S</td><td>2</td><td>0.27134388</td><td>0.052237016</td><td>0.181584294</td><td>0.38462109</td></tr>
+<tr><td>13</td><td>r</td><td>0</td><td>0.02558374</td><td>0.006999428</td><td>0.014917431</td><td>0.04353961</td></tr>
+<tr><td>13</td><td>r</td><td>1</td><td>0.05345407</td><td>0.02098894</td><td>0.024433586</td><td>0.11295223</td></tr>
+<tr><td>13</td><td>r</td><td>2</td><td>0.03335003</td><td>0.006012826</td><td>0.023377032</td><td>0.04737129</td></tr>
+<tr><td>13</td><td>S</td><td>0</td><td>0.61494509</td><td>0.079824115</td><td>0.451999814</td><td>0.75563361</td></tr>
+<tr><td>13</td><td>S</td><td>1</td><td>0.73244904</td><td>0.098054781</td><td>0.506592869</td><td>0.8795096</td></tr>
+<tr><td>13</td><td>S</td><td>2</td><td>0.43089938</td><td>0.071966327</td><td>0.29872331</td><td>0.57371374</td></tr>
+<tr><td>14</td><td>r</td><td>0</td><td>0.03087169</td><td>0.01076987</td><td>0.015487663</td><td>0.06059626</td></tr>
+<tr><td>14</td><td>r</td><td>1</td><td>0.05566887</td><td>0.020722943</td><td>0.026501774</td><td>0.11320363</td></tr>
+<tr><td>14</td><td>r</td><td>2</td><td>0.02717595</td><td>0.004000389</td><td>0.020343333</td><td>0.03621857</td></tr>
+<tr><td>14</td><td>S</td><td>0</td><td>0.68386425</td><td>0.090436343</td><td>0.487926794</td><td>0.8308239</td></tr>
+<tr><td>14</td><td>S</td><td>1</td><td>0.71968005</td><td>0.09830256</td><td>0.496955589</td><td>0.86965684</td></tr>
+<tr><td>14</td><td>S</td><td>2</td><td>0.30960179</td><td>0.056527417</td><td>0.210765315</td><td>0.42956045</td></tr>
+<tr><td>15</td><td>r</td><td>0</td><td>0.02077447</td><td>0.004884806</td><td>0.013077748</td><td>0.03285022</td></tr>
+<tr><td>15</td><td>r</td><td>1</td><td>0.03526933</td><td>0.007900198</td><td>0.02266698</td><td>0.05448769</td></tr>
+<tr><td>15</td><td>r</td><td>2</td><td>0.03190254</td><td>0.006003522</td><td>0.022017785</td><td>0.04601619</td></tr>
+<tr><td>15</td><td>S</td><td>0</td><td>0.54620346</td><td>0.072905431</td><td>0.403438388</td><td>0.68175394</td></tr>
+<tr><td>15</td><td>S</td><td>1</td><td>0.5701852</td><td>0.079171163</td><td>0.413243922</td><td>0.71418244</td></tr>
+<tr><td>15</td><td>S</td><td>2</td><td>0.46865988</td><td>0.074190549</td><td>0.32971526</td><td>0.61264002</td></tr>
+<tr><td>16</td><td>r</td><td>0</td><td>0.03164703</td><td>0.009255488</td><td>0.017759642</td><td>0.05577718</td></tr>
+<tr><td>16</td><td>r</td><td>1</td><td>0.03287072</td><td>0.007155581</td><td>0.021396038</td><td>0.05018369</td></tr>
+<tr><td>16</td><td>r</td><td>2</td><td>0.02552615</td><td>0.004065618</td><td>0.018659835</td><td>0.03482942</td></tr>
+<tr><td>16</td><td>S</td><td>0</td><td>0.64205543</td><td>0.08118908</td><td>0.472997105</td><td>0.78188919</td></tr>
+<tr><td>16</td><td>S</td><td>1</td><td>0.57100256</td><td>0.076497083</td><td>0.419180781</td><td>0.710543</td></tr>
+<tr><td>16</td><td>S</td><td>2</td><td>0.36375624</td><td>0.062934825</td><td>0.251226708</td><td>0.4934716</td></tr>
+<tr><td>17</td><td>r</td><td>0</td><td>0.05370209</td><td>0.026230102</td><td>0.020217718</td><td>0.13500173</td></tr>
+<tr><td>17</td><td>r</td><td>1</td><td>0.02888923</td><td>0.007741817</td><td>0.017025959</td><td>0.04860975</td></tr>
+<tr><td>17</td><td>r</td><td>2</td><td>0.02895547</td><td>0.005752164</td><td>0.019577769</td><td>0.04262974</td></tr>
+<tr><td>17</td><td>S</td><td>0</td><td>0.78285623</td><td>0.094849449</td><td>0.547055793</td><td>0.91497854</td></tr>
+<tr><td>17</td><td>S</td><td>1</td><td>0.62265597</td><td>0.086736294</td><td>0.444549586</td><td>0.77283543</td></tr>
+<tr><td>17</td><td>S</td><td>2</td><td>0.43893522</td><td>0.082581082</td><td>0.288491173</td><td>0.60150845</td></tr>
+<tr><td>18</td><td>r</td><td>0</td><td>0.10711839</td><td>0.112179204</td><td>0.011898551</td><td>0.54446474</td></tr>
+<tr><td>18</td><td>r</td><td>1</td><td>0.05727955</td><td>0.03980769</td><td>0.014122885</td><td>0.20490469</td></tr>
+<tr><td>18</td><td>r</td><td>2</td><td>0.0293295</td><td>0.005881378</td><td>0.01975679</td><td>0.0433354</td></tr>
+<tr><td>18</td><td>S</td><td>0</td><td>0.9055813</td><td>0.09615592</td><td>0.514161224</td><td>0.98862633</td></tr>
+<tr><td>18</td><td>S</td><td>1</td><td>0.79637596</td><td>0.137296015</td><td>0.426617782</td><td>0.95361377</td></tr>
+<tr><td>18</td><td>S</td><td>2</td><td>0.43112328</td><td>0.087089216</td><td>0.274231959</td><td>0.60317616</td></tr>
+<tr><td>19</td><td>r</td><td>0</td><td>0.01626999</td><td>0.00511359</td><td>0.008764547</td><td>0.03000809</td></tr>
+<tr><td>19</td><td>r</td><td>1</td><td>0.0508963</td><td>0.039885569</td><td>0.010518183</td><td>0.21292566</td></tr>
+<tr><td>19</td><td>r</td><td>2</td><td>0.0326756</td><td>0.010151299</td><td>0.017681693</td><td>0.05961258</td></tr>
+<tr><td>19</td><td>S</td><td>0</td><td>0.57134542</td><td>0.106226301</td><td>0.362904299</td><td>0.75721406</td></tr>
+<tr><td>19</td><td>S</td><td>1</td><td>0.7999377</td><td>0.153033934</td><td>0.380288744</td><td>0.96303552</td></tr>
+<tr><td>19</td><td>S</td><td>2</td><td>0.56178688</td><td>0.118651594</td><td>0.332647143</td><td>0.76728986</td></tr>
+<tr><td>20</td><td>r</td><td>0</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td></tr>
+<tr><td>20</td><td>r</td><td>1</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td></tr>
+<tr><td>20</td><td>r</td><td>2</td><td>0.02919039</td><td>0.005713846</td><td>0.019850317</td><td>0.04273358</td></tr>
+<tr><td>20</td><td>S</td><td>0</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td></tr>
+<tr><td>20</td><td>S</td><td>1</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td></tr>
+<tr><td>20</td><td>S</td><td>2</td><td>0.40928921</td><td>0.092661991</td><td>0.246364031</td><td>0.59490742</td></tr>
+<tr style="border-bottom:1px solid black"><td colspan="100%"></td></tr>
+<tr><td>20</td><td>f</td><td>0</td><td>0.008805653</td><td>0.001272182</td><td>0.006631966</td><td>0.01168341</td></tr>
+<tr><td>20</td><td>f</td><td>1</td><td>0.008805653</td><td>0.001443674</td><td>0.011901662</td><td>0.01759484</td></tr>
+</table>
+</details>
+
+<details>
+<summary>M<sub>comb</sub> (GLM) [Seber]</summary>
+<table style="margin: 0 auto; border-collapse: collapse; width: auto;">
+<tr><th>time</th><th>Param</th><th>Age</th><th>Estim</th><th>StdErr</th><th>Lower</th><th>Upper</th></tr>
+<tr><td>1</td><td>r</td><td>0</td><td>0.05492224</td><td>0.016036489</td><td>0.03074208</td><td>0.09623298</td></tr>
+<tr><td>1</td><td>r</td><td>1</td><td>0.05236602</td><td>0.0077574</td><td>0.039086563</td><td>0.06982926</td></tr>
+<tr><td>1</td><td>r</td><td>2</td><td>0.02869425</td><td>0.006940743</td><td>0.017809602</td><td>0.04592021</td></tr>
+<tr><td>1</td><td>S</td><td>0</td><td>0.62428405</td><td>0.093481262</td><td>0.432076097</td><td>0.783966</td></tr>
+<tr><td>1</td><td>S</td><td>1</td><td>0.48009339</td><td>0.061192979</td><td>0.363505081</td><td>0.59889092</td></tr>
+<tr><td>1</td><td>S</td><td>2</td><td>0.48306593</td><td>0.098828418</td><td>0.300805143</td><td>0.66994634</td></tr>
+<tr><td>2</td><td>r</td><td>0</td><td>0.09343643</td><td>0.054934478</td><td>0.028099545</td><td>0.26869381</td></tr>
+<tr><td>2</td><td>r</td><td>1</td><td>0.05209752</td><td>0.011258798</td><td>0.033961042</td><td>0.07912623</td></tr>
+<tr><td>2</td><td>r</td><td>2</td><td>0.04734273</td><td>0.011685586</td><td>0.029038346</td><td>0.07627889</td></tr>
+<tr><td>2</td><td>S</td><td>0</td><td>0.8048466</td><td>0.106345138</td><td>0.522441008</td><td>0.93956833</td></tr>
+<tr><td>2</td><td>S</td><td>1</td><td>0.59542488</td><td>0.077652819</td><td>0.438962655</td><td>0.73463134</td></tr>
+<tr><td>2</td><td>S</td><td>2</td><td>0.6449402</td><td>0.101105835</td><td>0.433271069</td><td>0.81187814</td></tr>
+<tr><td>3</td><td>r</td><td>0</td><td>0.04081756</td><td>0.01541993</td><td>0.019285638</td><td>0.08432238</td></tr>
+<tr><td>3</td><td>r</td><td>1</td><td>0.03744791</td><td>0.00693014</td><td>0.025996118</td><td>0.05366647</td></tr>
+<tr><td>3</td><td>r</td><td>2</td><td>0.02943397</td><td>0.004551404</td><td>0.021710744</td><td>0.03979284</td></tr>
+<tr><td>3</td><td>S</td><td>0</td><td>0.70900407</td><td>0.089804548</td><td>0.509352665</td><td>0.85115503</td></tr>
+<tr><td>3</td><td>S</td><td>1</td><td>0.52844685</td><td>0.06791782</td><td>0.396446289</td><td>0.65658562</td></tr>
+<tr><td>3</td><td>S</td><td>2</td><td>0.42054814</td><td>0.075129796</td><td>0.283980987</td><td>0.57046588</td></tr>
+<tr><td>4</td><td>r</td><td>0</td><td>0.05235714</td><td>0.018160924</td><td>0.026254584</td><td>0.10170067</td></tr>
+<tr><td>4</td><td>r</td><td>1</td><td>0.03987568</td><td>0.007652673</td><td>0.027303204</td><td>0.05789292</td></tr>
+<tr><td>4</td><td>r</td><td>2</td><td>0.02357181</td><td>0.003845064</td><td>0.017102409</td><td>0.03240774</td></tr>
+<tr><td>4</td><td>S</td><td>0</td><td>0.70793221</td><td>0.085657459</td><td>0.518337097</td><td>0.84518746</td></tr>
+<tr><td>4</td><td>S</td><td>1</td><td>0.56096449</td><td>0.07054977</td><td>0.42155825</td><td>0.69137054</td></tr>
+<tr><td>4</td><td>S</td><td>2</td><td>0.38255982</td><td>0.070166995</td><td>0.257132285</td><td>0.52586016</td></tr>
+<tr><td>5</td><td>r</td><td>0</td><td>0.02720135</td><td>0.005308015</td><td>0.018522457</td><td>0.03978201</td></tr>
+<tr><td>5</td><td>r</td><td>1</td><td>0.02479941</td><td>0.003472084</td><td>0.018831471</td><td>0.03259584</td></tr>
+<tr><td>5</td><td>r</td><td>2</td><td>0.04383221</td><td>0.006035622</td><td>0.033413031</td><td>0.05730777</td></tr>
+<tr><td>5</td><td>S</td><td>0</td><td>0.51149657</td><td>0.059065053</td><td>0.397158089</td><td>0.62464455</td></tr>
+<tr><td>5</td><td>S</td><td>1</td><td>0.42144612</td><td>0.047528763</td><td>0.332057165</td><td>0.51629822</td></tr>
+<tr><td>5</td><td>S</td><td>2</td><td>0.42172688</td><td>0.072959687</td><td>0.288626853</td><td>0.56726123</td></tr>
+<tr><td>6</td><td>r</td><td>0</td><td>0.11791086</td><td>0.068586691</td><td>0.035404788</td><td>0.32742229</td></tr>
+<tr><td>6</td><td>r</td><td>1</td><td>0.03574597</td><td>0.006731234</td><td>0.024658105</td><td>0.05155609</td></tr>
+<tr><td>6</td><td>r</td><td>2</td><td>0.03043635</td><td>0.00422271</td><td>0.023165046</td><td>0.03989684</td></tr>
+<tr><td>6</td><td>S</td><td>0</td><td>0.83394093</td><td>0.089553812</td><td>0.585728707</td><td>0.94691436</td></tr>
+<tr><td>6</td><td>S</td><td>1</td><td>0.56731781</td><td>0.065686506</td><td>0.436944181</td><td>0.68899085</td></tr>
+<tr><td>6</td><td>S</td><td>2</td><td>0.38025293</td><td>0.065080443</td><td>0.26313224</td><td>0.51319747</td></tr>
+<tr><td>7</td><td>r</td><td>0</td><td>0.07114466</td><td>0.036475095</td><td>0.025306163</td><td>0.18431229</td></tr>
+<tr><td>7</td><td>r</td><td>1</td><td>0.03860844</td><td>0.009120761</td><td>0.024208831</td><td>0.06103729</td></tr>
+<tr><td>7</td><td>r</td><td>2</td><td>0.02516855</td><td>0.003962299</td><td>0.018465739</td><td>0.03421957</td></tr>
+<tr><td>7</td><td>S</td><td>0</td><td>0.80433062</td><td>0.090541647</td><td>0.571017807</td><td>0.9269776</td></tr>
+<tr><td>7</td><td>S</td><td>1</td><td>0.61553083</td><td>0.077323601</td><td>0.457655011</td><td>0.752321</td></tr>
+<tr><td>7</td><td>S</td><td>2</td><td>0.32294065</td><td>0.068260091</td><td>0.205514108</td><td>0.46794398</td></tr>
+<tr><td>8</td><td>r</td><td>0</td><td>0.05381334</td><td>0.025369644</td><td>0.020969598</td><td>0.13120482</td></tr>
+<tr><td>8</td><td>r</td><td>1</td><td>0.04431339</td><td>0.013272342</td><td>0.02447307</td><td>0.07893675</td></tr>
+<tr><td>8</td><td>r</td><td>2</td><td>0.02972108</td><td>0.005933523</td><td>0.0200552</td><td>0.04383717</td></tr>
+<tr><td>8</td><td>S</td><td>0</td><td>0.78435842</td><td>0.089948378</td><td>0.561911978</td><td>0.91161951</td></tr>
+<tr><td>8</td><td>S</td><td>1</td><td>0.67850331</td><td>0.086386522</td><td>0.492676072</td><td>0.82099481</td></tr>
+<tr><td>8</td><td>S</td><td>2</td><td>0.49037521</td><td>0.088870424</td><td>0.323987571</td><td>0.65892301</td></tr>
+<tr><td>9</td><td>r</td><td>0</td><td>0.04243523</td><td>0.014160687</td><td>0.021892962</td><td>0.08066282</td></tr>
+<tr><td>9</td><td>r</td><td>1</td><td>0.04926518</td><td>0.011837249</td><td>0.03060935</td><td>0.07837214</td></tr>
+<tr><td>9</td><td>r</td><td>2</td><td>0.02916883</td><td>0.00549106</td><td>0.020131953</td><td>0.04208796</td></tr>
+<tr><td>9</td><td>S</td><td>0</td><td>0.70650189</td><td>0.081357675</td><td>0.527332136</td><td>0.83854906</td></tr>
+<tr><td>9</td><td>S</td><td>1</td><td>0.61851904</td><td>0.081235243</td><td>0.452262779</td><td>0.76098118</td></tr>
+<tr><td>9</td><td>S</td><td>2</td><td>0.47301788</td><td>0.089970231</td><td>0.30672819</td><td>0.64551749</td></tr>
+<tr><td>10</td><td>r</td><td>0</td><td>0.04997228</td><td>0.02097729</td><td>0.021645661</td><td>0.11115684</td></tr>
+<tr><td>10</td><td>r</td><td>1</td><td>0.22211152</td><td>0.261577115</td><td>0.014475106</td><td>0.84734623</td></tr>
+<tr><td>10</td><td>r</td><td>2</td><td>0.02882634</td><td>0.004195787</td><td>0.021647728</td><td>0.03829228</td></tr>
+<tr><td>10</td><td>S</td><td>0</td><td>0.76995249</td><td>0.083513594</td><td>0.570505946</td><td>0.89399085</td></tr>
+<tr><td>10</td><td>S</td><td>1</td><td>0.91036574</td><td>0.105296122</td><td>0.447429018</td><td>0.99221145</td></tr>
+<tr><td>10</td><td>S</td><td>2</td><td>0.28208999</td><td>0.060606803</td><td>0.17936023</td><td>0.4139771</td></tr>
+<tr><td>11</td><td>r</td><td>0</td><td>0.20046918</td><td>0.262951814</td><td>0.00996293</td><td>0.86201672</td></tr>
+<tr><td>11</td><td>r</td><td>1</td><td>0.09268405</td><td>0.050415942</td><td>0.030579892</td><td>0.24857378</td></tr>
+<tr><td>11</td><td>r</td><td>2</td><td>0.0223854</td><td>0.005443107</td><td>0.013868056</td><td>0.03594316</td></tr>
+<tr><td>11</td><td>S</td><td>0</td><td>0.9484709</td><td>0.066060996</td><td>0.565482742</td><td>0.99617348</td></tr>
+<tr><td>11</td><td>S</td><td>1</td><td>0.77867466</td><td>0.117831711</td><td>0.479481154</td><td>0.93073537</td></tr>
+<tr><td>11</td><td>S</td><td>2</td><td>0.44864611</td><td>0.109809871</td><td>0.254220057</td><td>0.66014611</td></tr>
+<tr><td>12</td><td>r</td><td>0</td><td>0.02044916</td><td>0.004811473</td><td>0.012869431</td><td>0.03234683</td></tr>
+<tr><td>12</td><td>r</td><td>1</td><td>0.08198354</td><td>0.042624948</td><td>0.028588447</td><td>0.21321631</td></tr>
+<tr><td>12</td><td>r</td><td>2</td><td>0.02456545</td><td>0.004034318</td><td>0.017783616</td><td>0.03384444</td></tr>
+<tr><td>12</td><td>S</td><td>0</td><td>0.60804848</td><td>0.072675287</td><td>0.460440746</td><td>0.73823235</td></tr>
+<tr><td>12</td><td>S</td><td>1</td><td>0.78482737</td><td>0.109352443</td><td>0.506210341</td><td>0.92845556</td></tr>
+<tr><td>12</td><td>S</td><td>2</td><td>0.30863067</td><td>0.076413524</td><td>0.181171308</td><td>0.47386738</td></tr>
+<tr><td>13</td><td>r</td><td>0</td><td>0.0256717</td><td>0.007141913</td><td>0.014832347</td><td>0.04407796</td></tr>
+<tr><td>13</td><td>r</td><td>1</td><td>0.05147137</td><td>0.018661952</td><td>0.02501162</td><td>0.10296667</td></tr>
+<tr><td>13</td><td>r</td><td>2</td><td>0.03361145</td><td>0.007336174</td><td>0.021851844</td><td>0.05136718</td></tr>
+<tr><td>13</td><td>S</td><td>0</td><td>0.61563494</td><td>0.081391894</td><td>0.449396444</td><td>0.75863902</td></tr>
+<tr><td>13</td><td>S</td><td>1</td><td>0.70625226</td><td>0.100928853</td><td>0.480938061</td><td>0.86185545</td></tr>
+<tr><td>13</td><td>S</td><td>2</td><td>0.51761802</td><td>0.109460361</td><td>0.312440404</td><td>0.71702199</td></tr>
+<tr><td>14</td><td>r</td><td>0</td><td>0.03077936</td><td>0.011010592</td><td>0.015171362</td><td>0.06144275</td></tr>
+<tr><td>14</td><td>r</td><td>1</td><td>0.05353136</td><td>0.018332459</td><td>0.027075966</td><td>0.1030967</td></tr>
+<tr><td>14</td><td>r</td><td>2</td><td>0.02609422</td><td>0.004401454</td><td>0.01872373</td><td>0.03625887</td></tr>
+<tr><td>14</td><td>S</td><td>0</td><td>0.68304694</td><td>0.092864188</td><td>0.481776937</td><td>0.83320919</td></tr>
+<tr><td>14</td><td>S</td><td>1</td><td>0.6952237</td><td>0.099323573</td><td>0.476490951</td><td>0.85112054</td></tr>
+<tr><td>14</td><td>S</td><td>2</td><td>0.37731807</td><td>0.087861606</td><td>0.225497971</td><td>0.55774482</td></tr>
+<tr><td>15</td><td>r</td><td>0</td><td>0.02079857</td><td>0.004983639</td><td>0.012977536</td><td>0.03317461</td></tr>
+<tr><td>15</td><td>r</td><td>1</td><td>0.03478944</td><td>0.007163817</td><td>0.023176179</td><td>0.05191269</td></tr>
+<tr><td>15</td><td>r</td><td>2</td><td>0.03207052</td><td>0.007759407</td><td>0.019895749</td><td>0.0513054</td></tr>
+<tr><td>15</td><td>S</td><td>0</td><td>0.54673999</td><td>0.074153753</td><td>0.401556694</td><td>0.68438508</td></tr>
+<tr><td>15</td><td>S</td><td>1</td><td>0.53881631</td><td>0.079393708</td><td>0.384464184</td><td>0.68606773</td></tr>
+<tr><td>15</td><td>S</td><td>2</td><td>0.57237976</td><td>0.120403463</td><td>0.337914806</td><td>0.77829099</td></tr>
+<tr><td>16</td><td>r</td><td>0</td><td>0.03180069</td><td>0.009450585</td><td>0.017678701</td><td>0.05655405</td></tr>
+<tr><td>16</td><td>r</td><td>1</td><td>0.03294219</td><td>0.006691717</td><td>0.022070155</td><td>0.0489021</td></tr>
+<tr><td>16</td><td>r</td><td>2</td><td>0.02451073</td><td>0.004815097</td><td>0.016650208</td><td>0.03594652</td></tr>
+<tr><td>16</td><td>S</td><td>0</td><td>0.64402813</td><td>0.08229323</td><td>0.47236147</td><td>0.78523663</td></tr>
+<tr><td>16</td><td>S</td><td>1</td><td>0.54381996</td><td>0.077219621</td><td>0.393086381</td><td>0.68693277</td></tr>
+<tr><td>16</td><td>S</td><td>2</td><td>0.46271453</td><td>0.10282917</td><td>0.276856563</td><td>0.65954551</td></tr>
+<tr><td>17</td><td>r</td><td>0</td><td>0.05264515</td><td>0.025541439</td><td>0.019960049</td><td>0.13166252</td></tr>
+<tr><td>17</td><td>r</td><td>1</td><td>0.02907819</td><td>0.007779537</td><td>0.017152037</td><td>0.0488844</td></tr>
+<tr><td>17</td><td>r</td><td>2</td><td>0.02894203</td><td>0.006077836</td><td>0.019134175</td><td>0.04355399</td></tr>
+<tr><td>17</td><td>S</td><td>0</td><td>0.77947579</td><td>0.095401495</td><td>0.543590531</td><td>0.9129678</td></tr>
+<tr><td>17</td><td>S</td><td>1</td><td>0.61966961</td><td>0.090077865</td><td>0.435123674</td><td>0.77508825</td></tr>
+<tr><td>17</td><td>S</td><td>2</td><td>0.46339372</td><td>0.115607094</td><td>0.257704938</td><td>0.68234215</td></tr>
+<tr><td>18</td><td>r</td><td>0</td><td>0.10820172</td><td>0.117213195</td><td>0.011095136</td><td>0.56748711</td></tr>
+<tr><td>18</td><td>r</td><td>1</td><td>0.05953673</td><td>0.043638385</td><td>0.013555189</td><td>0.22579304</td></tr>
+<tr><td>18</td><td>r</td><td>2</td><td>0.02860714</td><td>0.005365708</td><td>0.019771791</td><td>0.04122467</td></tr>
+<tr><td>18</td><td>S</td><td>0</td><td>0.90677006</td><td>0.098245094</td><td>0.499256607</td><td>0.9895703</td></tr>
+<tr><td>18</td><td>S</td><td>1</td><td>0.80755355</td><td>0.139134786</td><td>0.420544244</td><td>0.96041528</td></tr>
+<tr><td>18</td><td>S</td><td>2</td><td>0.38935185</td><td>0.120107914</td><td>0.19151864</td><td>0.6318351</td></tr>
+<tr><td>19</td><td>r</td><td>0</td><td>0.0162449</td><td>0.005313565</td><td>0.008532671</td><td>0.03071187</td></tr>
+<tr><td>19</td><td>r</td><td>1</td><td>0.04149431</td><td>0.027488792</td><td>0.011047157</td><td>0.14366655</td></tr>
+<tr><td>19</td><td>r</td><td>2</td><td>0.0445446</td><td>0.033863875</td><td>0.00970652</td><td>0.18150404</td></tr>
+<tr><td>19</td><td>S</td><td>0</td><td>0.56998042</td><td>0.112632643</td><td>0.350028898</td><td>0.76538888</td></tr>
+<tr><td>19</td><td>S</td><td>1</td><td>0.73923466</td><td>0.169607776</td><td>0.335696619</td><td>0.94083959</td></tr>
+<tr><td>19</td><td>S</td><td>2</td><td>0.75001282</td><td>0.237846796</td><td>0.199775803</td><td>0.9730134</td></tr>
+<tr><td>20</td><td>r</td><td>0</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td></tr>
+<tr><td>20</td><td>r</td><td>1</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td></tr>
+<tr><td>20</td><td>r</td><td>2</td><td>0.03445507</td><td>0.052246168</td><td>0.001640435</td><td>0.43661267</td></tr>
+<tr><td>20</td><td>S</td><td>0</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td></tr>
+<tr><td>20</td><td>S</td><td>1</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td></tr>
+<tr><td>20</td><td>S</td><td>2</td><td>0.56890789</td><td>1.127204802</td><td>0.000161477</td><td>0.99990728</td></tr>
+<tr style="border-bottom:1px solid black"><td colspan="100%"></td></tr>
+<tr><td>20</td><td>f</td><td>0</td><td>0.008861339</td><td>0.001375695</td><td>0.006534128</td><td>0.0120074</td></tr>
+<tr><td>20</td><td>f</td><td>1</td><td>0.008861339</td><td>0.00144681</td><td>0.011910795</td><td>0.01761642</td></tr>
 </table>
 </details>
 
@@ -1939,20 +2551,22 @@ Data frames containing the Bayesian estimates, standard errors, 95% credible int
 
 ### R code
 
-The R code for the GLM is given below
+The R code to obtain the estiamtes from the GLMs and Bayesian models are below
 
 <details>
-<summary>R code</summary>
-<pre><code>
+<summary>GLM Brownie</summary>
+<pre>
+<code><![CDATA[
 library(readxl)
 library(dplyr)
 library(tidyr)
+library(ggplot2)
 
 setwd(dirname(parent.frame(2)$ofile))
 
 windowsFonts(Font = windowsFont("CMU Serif"))
 
-#Read data
+#Read data - you may need to change these
 adults    <- read_xlsx("../data/blackbirds/adults.xlsx")
 juveniles <- read_xlsx("../data/blackbirds/juveniles.xlsx")
 pulliSep  <- read_xlsx("../data/blackbirds/pulli.xlsx")
@@ -2194,11 +2808,9 @@ likelihood3A_PFcomb <- function(params,
   theta2 <- pmin(pmax(theta2, eps), 1 - eps)
   
   ##Adult likelihood
-  #Loop over rows
   for (p in 1:l){
     likAdult <- 0
     
-    #Loop over
     for (i in p:l){
       if (i == p){
         probAdult <- f0[i]
@@ -2213,10 +2825,10 @@ likelihood3A_PFcomb <- function(params,
   }
   
   #Juvenile likelihood
-  for (p in 1:l){ #Rows (p moves down)
+  for (p in 1:l){
     likJuvenile <- 0
     
-    for (i in p:l){ #Cols (i moves left to right)
+    for (i in p:l){
       if (i == p){
         probJuvenile <- f1[i]
       } else if (i == p+1){
@@ -2261,7 +2873,12 @@ likelihood3A_PFcomb <- function(params,
 
 nPar <- 118
 
-inits <- rnorm(nPar)
+inits <- logit(c(rep(0.02, l),
+                 rep(0.02, l),
+                 rep(0.02, l),
+                 rep(0.7, l-1),
+                 rep(0.6, l-1),
+                 rep(0.5, l)))
 
 resultSep <- optim(inits, likelihood3A_PFsep,
                    R = R, Q = Q, P = PSep, N = N, M = M, L = L,
@@ -2271,11 +2888,14 @@ resultComb <- optim(inits, likelihood3A_PFcomb,
                     R = R, Q = Q, P = PComb, N = N, M = M, L = L,
                     method = "L-BFGS-B", hessian = TRUE)
 
+
 l <- dim(R)[1]
 
-pprint <- function(x){
-  cat(x, sep = "\n")
-}
+saveRDS(resultSep, "BrownieGLM_sep")
+saveRDS(resultComb, "BrownieGLM_comb")
+
+# resultSep  <- readRDS("BrownieGLM_sep")
+# resultComb <- readRDS("BrownieGLM_comb")
 
 #Function to pad vector x to length n
 pad <- function(x, n) {
@@ -2388,8 +3008,851 @@ dfComb <- getEstimsDf(resultComb) %>%
   mutate(Model = "Comb")
 
 #Combine dataframes
-df <- rbind(dfSep, dfComb)
-</code></pre>
+df <- rbind(dfSep, dfComb)]]>
+</code>
+</pre>
+</details>
+
+<details>
+<summary>GLM Seber</summary>
+<pre>
+<code><![CDATA[
+library(readxl)
+library(dplyr)
+library(tidyr)
+library(purrr)
+library(ggplot2)
+
+setwd(dirname(parent.frame(2)$ofile))
+
+windowsFonts(Font = windowsFont("CMU Serif"))
+
+#Read data
+adults    <- read_xlsx("../data/blackbirds/adults.xlsx")
+juveniles <- read_xlsx("../data/blackbirds/juveniles.xlsx")
+pulliSep  <- read_xlsx("../data/blackbirds/pulli.xlsx")
+pulliComb <- read_xlsx("../data/blackbirds/pulliComb.xlsx")
+
+#Select recovery counts
+R     <- adults    %>% select(-c("Year of ringing", "Total ringed"))
+Q     <- juveniles %>% select(-c("Year of ringing", "Total ringed"))
+PSep  <- pulliSep  %>% select(-c("Year of ringing", "Total ringed"))
+PComb <- pulliComb %>% select(-c("Year of ringing", "Total ringed"))
+
+#Select totals ringed
+N <- adults    %>% select("Total ringed")
+M <- juveniles %>% select("Total ringed")
+L <- pulliSep  %>% select("Total ringed")
+
+#Convert recovery counts to matrix
+R     <- as.matrix(R)
+Q     <- as.matrix(Q)
+PSep  <- as.matrix(PSep)
+PComb <- as.matrix(PComb)
+
+#Convert totals ringed to vectors
+N <- as.vector(N)$`Total ringed`
+M <- as.vector(M)$`Total ringed`
+L <- as.vector(L)$`Total ringed`
+
+#Inverse logit function
+ilogit <- function(x){
+  1/(1+exp(-x))
+}
+
+#Logit function
+logit <- function(x){
+  log(x / (1 - x))
+}
+
+#To calculate T_{i}, U_{i}
+sumFunc <- function(data, i){
+  rows <- rowSums(data)
+  cols <- colSums(data)
+  
+  as.numeric(ifelse(i == 1, rows[1], sum(rows[1:i]) - sum(cols[1:(i-1)])))
+}
+
+#To calculate V_{i}
+sumFuncPulli <- function(data, i){
+  rows <- rowSums(data)
+  cols <- colSums(data)
+  
+  as.numeric(ifelse(i == 1, rows[1], sum(rows[1:i]) - sum(cols[1:i]) + data[i,][i]))
+}
+
+#To calculate P_{.i}
+colSumPulli <- function(data, i){
+  out <- ifelse(i == l,
+                data[i,][i] + sum(data[,(i+1)]),
+                data[i,][i] + sum(data[,(i+1)]) - data[(i+1),][i+1])
+  
+  as.numeric(out)
+}
+
+#GLM likelihoods
+likelihood3A_PFsep <- function(params,
+                               R, P, Q,
+                               N, M, L){
+  l <- dim(R)[1]
+  
+  #Parameters in logit space
+  logitr0 <- params[1:(l-1)]
+  logitr1 <- params[l:(2*l-2)]
+  logitr2 <- params[(2*l-1):(3*l-2)]
+  logitS0 <- params[(3*l-1):(4*l-3)]
+  logitS1 <- params[(4*l-2):(5*l-4)]
+  logitS2 <- params[(5*l-3):(6*l-4)]
+  
+  logitf0l <- params[6*l-3]
+  logitf1l <- params[6*l-2]
+  
+  #Parameters bounded between 0 and 1
+  r0 <- ilogit(logitr0)
+  r1 <- ilogit(logitr1)
+  r2 <- ilogit(logitr2)
+  S0 <- ilogit(logitS0)
+  S1 <- ilogit(logitS1)
+  S2 <- ilogit(logitS2)
+  
+  f0l <- ilogit(logitf0l)
+  f1l <- ilogit(logitf1l)
+  
+  #Initialise theta vectors
+  theta0 <- numeric(l)
+  theta1 <- numeric(l)
+  theta2 <- numeric(l)
+  
+  #Initialise row likelihood vectors
+  lik0 <- numeric(l)
+  lik1 <- numeric(l)
+  lik2 <- numeric(l)
+  
+  #Create theta values
+  for (i in l:1){
+    if (i == l){
+      theta0[i] <- f0l
+      theta1[i] <- f1l
+      theta2[i] <- (1 - S2[i]) * r2[i] + S2[i] * f1l #PF and Juv. probabilities
+    } else {
+      theta0[i] <- (1 - S0[i])*r0[i] + S0[i]*theta0[i+1]
+      theta1[i] <- (1 - S1[i])*r1[i] + S1[i]*theta0[i+1]
+      theta2[i] <- (1 - S2[i])*r2[i] + S2[i]*theta1[i]
+    }
+  }
+  
+  eps <- 1e-12
+  
+  #Ensure theta values are valid
+  theta0 <- pmin(pmax(theta0, eps), 1 - eps)
+  theta1 <- pmin(pmax(theta1, eps), 1 - eps)
+  theta2 <- pmin(pmax(theta2, eps), 1 - eps)
+  
+  ##Adult likelihood
+  #Loop over rows
+  for (p in 1:l){
+    likAdult <- 0
+    
+    #Loop over columns
+    for (i in p:l){
+      
+      #Main diagonal
+      if (i == p){
+        if (i == l) {probAdult <- f0l}
+        else        {probAdult <- (1 - S0[i])*r0[i]}
+      }
+      
+      #All others
+      else {
+        if (i == l) {probAdult <- prod(S0[p:(i-1)]) * f0l}
+        else        {probAdult <- prod(S0[p:(i-1)]) * (1 - S0[i])*r0[i]}
+      }
+      
+      #Add value to likelihood according to log likelihood function
+      likAdult <- likAdult + R[p, i]*log(probAdult)
+    }
+    
+    #Add probability of non-recovery and assign to row likelihood
+    lik0[p] <- likAdult + (N[p] - rowSums(R)[p]) * log(1 - theta0[p])
+  }
+  
+  ##Juvenile likelihood
+  #Loop over rows
+  for (p in 1:l){
+    likJuvenile <- 0
+    
+    #Loop over columns
+    for (i in p:l){
+      
+      #Main diaongal
+      if (i == p){
+        if (i == l) {probJuvenile <- f1l}
+        else        {probJuvenile <- (1 - S1[i]) * r1[i]}
+      } 
+      
+      #One above main diaongal
+      else if (i == p+1){
+        if (i == l) {probJuvenile <- S1[p] * f0l}
+        else        {probJuvenile <- S1[p] * (1 - S0[i]) * r0[i]}
+      } 
+      
+      #All others
+      else {
+        if (i == l) {probJuvenile <- S1[p] * prod(S0[(p+1):(i-1)]) * f0l}
+        else        {probJuvenile <- S1[p] * prod(S0[(p+1):(i-1)]) * (1 - S0[i]) * r0[i]}
+      }
+      
+      #Add value to likelihood according to log likelihood function
+      likJuvenile <- likJuvenile + Q[p, i] * log(probJuvenile)
+    }
+    
+    #Add probability of non-recovery and assign to row likelihood
+    lik1[p] <- likJuvenile + (M[p] - rowSums(Q)[p]) * log(1 - theta1[p])
+  }
+  
+  ##Pullus likelihood
+  #Loop over rows
+  for (p in 1:l){
+    likPullus <- 0
+    
+    #Loop over columns
+    for (i in p:(l+1)){
+      
+      #Main diagonal - PF
+      if (i == p){
+        probPullus <- (1 - S2[i]) * r2[i]
+      } 
+      
+      #One above main diagonal - JUV
+      else if (i == p+1){
+        if (i == (l+1)) {probPullus <- S2[p] * f1l}
+        else            {probPullus <- S2[p] * (1 - S1[p]) * r1[p]}
+      }
+      
+      #Two above main diagonal
+      else if (i == p+2){
+        if (i == (l+1)) {probPullus <- S2[p] * S1[p] * f0l}
+        else            {probPullus <- S2[p] * S1[p] * (1 - S0[p+1])*r0[p+1]}
+      } 
+      
+      #All others
+      else {
+        if (i == (l+1)) {probPullus <- S2[p] * S1[p] * prod(S0[(p+1):(i-2)]) * f0l}
+        else            {probPullus <- S2[p] * S1[p] * prod(S0[(p+1):(i-2)]) * (1 - S0[i-1])*r0[i-1]}
+      }
+      
+      #Add value to likelihood according to log likelihood function
+      likPullus <- likPullus + P[p, i] * log(probPullus)
+    }
+    
+    #Add probability of non-recovery and assign to row likelihood
+    lik2[p] <- likPullus + (L[p] - rowSums(P)[p]) * log(1 - theta2[p])
+  }
+  
+  #Sum all row likelihoods
+  totalLik0 <- sum(lik0)
+  totalLik1 <- sum(lik1)
+  totalLik2 <- sum(lik2)
+  
+  #Sum of age likelihoods
+  totalLik <- totalLik0 + totalLik1 + totalLik2
+  
+  #Return negative as optim minimises
+  -totalLik
+}
+
+likelihood3A_PFcomb <- function(params,
+                                R, P, Q,
+                                N, M, L){
+  l <- dim(R)[1]
+  
+  #Parameters in logit space
+  logitr0 <- params[1:(l-1)]
+  logitr1 <- params[l:(2*l-2)]
+  logitr2 <- params[(2*l-1):(3*l-2)]
+  logitS0 <- params[(3*l-1):(4*l-3)]
+  logitS1 <- params[(4*l-2):(5*l-4)]
+  logitS2 <- params[(5*l-3):(6*l-4)]
+  
+  logitf0l <- params[6*l-3]
+  logitf1l <- params[6*l-2]
+  
+  #Parameters bounded between 0 and 1
+  r0 <- ilogit(logitr0)
+  r1 <- ilogit(logitr1)
+  r2 <- ilogit(logitr2)
+  S0 <- ilogit(logitS0)
+  S1 <- ilogit(logitS1)
+  S2 <- ilogit(logitS2)
+  
+  f0l <- ilogit(logitf0l)
+  f1l <- ilogit(logitf1l)
+  
+  #Initialise theta vectors
+  theta0 <- numeric(l)
+  theta1 <- numeric(l)
+  theta2 <- numeric(l)
+  
+  #Initialise row likelihood vectors
+  lik0 <- numeric(l)
+  lik1 <- numeric(l)
+  lik2 <- numeric(l)
+  
+  #Create theta values
+  for (i in l:1){
+    if (i == l){
+      theta0[i] <- f0l
+      theta1[i] <- f1l
+      theta2[i] <- (1 - S2[i]) * r2[i] + S2[i] * f1l #PF and Juv. probabilities
+    } else {
+      theta0[i] <- (1 - S0[i])*r0[i] + S0[i]*theta0[i+1]
+      theta1[i] <- (1 - S1[i])*r1[i] + S1[i]*theta0[i+1]
+      theta2[i] <- (1 - S2[i])*r2[i] + S2[i]*theta1[i]
+    }
+  }
+  
+  eps <- 1e-12
+  
+  #Ensure theta values are valid
+  theta0 <- pmin(pmax(theta0, eps), 1 - eps)
+  theta1 <- pmin(pmax(theta1, eps), 1 - eps)
+  theta2 <- pmin(pmax(theta2, eps), 1 - eps)
+  
+  ##Adult likelihood
+  #Loop over rows
+  for (p in 1:l){
+    likAdult <- 0
+    
+    #Loop over columns
+    for (i in p:l){
+      
+      #Main diagonal
+      if (i == p){
+        if (i == l) {probAdult <- f0l}
+        else        {probAdult <- (1 - S0[i])*r0[i]}
+      }
+      
+      #All others
+      else {
+        if (i == l) {probAdult <- prod(S0[p:(i-1)]) * f0l}
+        else        {probAdult <- prod(S0[p:(i-1)]) * (1 - S0[i])*r0[i]}
+      }
+      
+      #Add value to likelihood according to log likelihood function
+      likAdult <- likAdult + R[p, i]*log(probAdult)
+    }
+    
+    #Add probability of non-recovery and assign to row likelihood
+    lik0[p] <- likAdult + (N[p] - rowSums(R)[p]) * log(1 - theta0[p])
+  }
+  
+  ##Juvenile likelihood
+  #Loop over rows
+  for (p in 1:l){
+    likJuvenile <- 0
+    
+    #Loop over columns
+    for (i in p:l){
+      
+      #Main diaongal
+      if (i == p){
+        if (i == l) {probJuvenile <- f1l}
+        else        {probJuvenile <- (1 - S1[i]) * r1[i]}
+      } 
+      
+      #One above main diaongal
+      else if (i == p+1){
+        if (i == l) {probJuvenile <- S1[p] * f0l}
+        else        {probJuvenile <- S1[p] * (1 - S0[i]) * r0[i]}
+      } 
+      
+      #All others
+      else {
+        if (i == l) {probJuvenile <- S1[p] * prod(S0[(p+1):(i-1)]) * f0l}
+        else        {probJuvenile <- S1[p] * prod(S0[(p+1):(i-1)]) * (1 - S0[i]) * r0[i]}
+      }
+      
+      #Add value to likelihood according to log likelihood function
+      likJuvenile <- likJuvenile + Q[p, i] * log(probJuvenile)
+    }
+    
+    #Add probability of non-recovery and assign to row likelihood
+    lik1[p] <- likJuvenile + (M[p] - rowSums(Q)[p]) * log(1 - theta1[p])
+  }
+  
+  ##Pullus likelihood
+  #Loop over rows
+  for (p in 1:l){
+    likPullus <- 0
+    
+    #Loop over columns
+    for (i in p:l){
+      
+      #Main diagonal - PF
+      if (i == p){
+        if (i == l) {probPullus <- (1 - S2[i]) * r2[i] + S2[i] * f1l}
+        else        {probPullus <- (1 - S2[i]) * r2[i] + S2[i] * (1 - S1[i]) * r1[i]}
+      } 
+      
+      #One above main diagonal - JUV
+      else if (i == p+1){
+        if (i == l) {probPullus <- S2[p] * S1[p] * f0l}
+        else        {probPullus <- S2[p] * S1[p] * (1 - S0[p+1]) * r0[p+1]}
+      }
+      
+      #All others
+      else {
+        if (i == l) {probPullus <- S2[p] * S1[p] * prod(S0[(p+1):(i-1)]) * f0l}
+        else        {probPullus <- S2[p] * S1[p] * prod(S0[(p+1):(i-1)]) * (1 - S0[i])*r0[i]}
+      }
+      
+      #Add value to likelihood according to log likelihood function
+      likPullus <- likPullus + P[p, i] * log(probPullus)
+    }
+    
+    #Add probability of non-recovery and assign to row likelihood
+    lik2[p] <- likPullus + (L[p] - rowSums(P)[p]) * log(1 - theta2[p])
+  }
+  
+  #Sum all row likelihoods
+  totalLik0 <- sum(lik0)
+  totalLik1 <- sum(lik1)
+  totalLik2 <- sum(lik2)
+  
+  #Sum of age likelihoods
+  totalLik <- totalLik0 + totalLik1 + totalLik2
+  
+  #Return negative as optim minimises
+  -totalLik
+}
+
+#Get MLE means
+getSepInits <- function(){
+  dataSep <- data.frame(time = 1:l,
+                        Ni  = adults$`Total ringed`,
+                        Mi  = juveniles$`Total ringed`,
+                        Li  = pulliSep$`Total ringed`,
+                        Ri. = rowSums(R),
+                        Qi. = rowSums(Q),
+                        Pi. = rowSums(PSep),
+                        R.i = colSums(R),
+                        Q.i = colSums(Q),
+                        P.i = map_dbl(1:l, ~colSumPulli(PSep, .x)),
+                        Qii = diag(as.matrix(Q)),
+                        Pii = diag(as.matrix(PSep)),
+                        Pii1 = PSep[row(PSep) == col(PSep) - 1],
+                        Ti  = map_dbl(1:l, ~sumFunc(R, .x)),
+                        Ui  = map_dbl(1:l, ~sumFunc(Q, .x)),
+                        Vi  = map_dbl(1:l, ~sumFuncPulli(PSep, .x))) %>%
+    mutate(Ni1  = lead(Ni, order_by = row_number())) %>%
+    mutate(Ri1. = lead(Ri., order_by = row_number())) %>%
+    mutate(Zi = Ti + Ui - Qi. + Vi - Pi.) %>%
+    mutate(Wi = R.i + Q.i - Qii + P.i - Pii - Pii1) %>%
+    mutate(Ci = Qi. + Pi. - Pii) %>%
+    mutate(Di = Qii + Pii1) %>%
+    mutate(theta0 = Ri./Ni) %>%
+    mutate(theta1 = Qi./Mi) %>%
+    mutate(theta2 = Pi./Li)
+  
+  estimsSep <- dataSep %>%
+    mutate(S0Estim = Ri./Ni * Ni1/Ri1. * (Zi - Wi)/Zi) %>%
+    mutate(r0Estim = (Ri.*Wi*Ri1.) / (Ni*Ri1.*Zi - Ri.*Ni1*(Zi - Wi))) %>%
+    mutate(S1Estim = Ni1/Ri1. * Qi./Mi * (Qi. - Qii + Pi. - Pii - Pii1)/(Qi. + Pi. - Pii)) %>%
+    mutate(r1Estim = (Qi.*Di*Ri1.) / (Mi*Ri1.*Ci - Qi.*Ni1*(Ci - Di))) %>%
+    mutate(S2Estim = Mi/Li * (Pi. - Pii)/Qi.) %>%
+    mutate(r2Estim = Pii*Qi. / (Li*Qi. - Mi*(Pi. - Pii)))
+  
+  boundProb <- function(x) {min(max(x, 0), 1)}
+  
+  means <- estimsSep %>%
+    summarise(meanr0 = mean(sapply(na.omit(r0Estim), boundProb)),
+              meanr1 = mean(sapply(na.omit(r1Estim), boundProb)),
+              meanr2 = mean(sapply(na.omit(r2Estim), boundProb)),
+              meanS0 = mean(sapply(na.omit(S0Estim), boundProb)),
+              meanS1 = mean(sapply(na.omit(S1Estim), boundProb)),
+              meanS2 = mean(sapply(na.omit(S2Estim), boundProb)))
+
+  means
+}
+
+l <- dim(R)[1]
+
+nPar <- 6*l - 2
+
+initMeans <- getSepInits()
+
+r0Mean <- initMeans$meanr0
+r1Mean <- initMeans$meanr1
+r2Mean <- initMeans$meanr2
+
+S0Mean <- initMeans$meanS0
+S1Mean <- initMeans$meanS1
+S2Mean <- initMeans$meanS2
+
+inits <- logit(c(rep(0.05, l-1),
+                 rep(0.05, l-1),
+                 rep(0.05, l),
+                 rep(0.7, l-1),
+                 rep(0.6, l-1),
+                 rep(0.5, l),
+                 0.02,
+                 0.02))
+
+resultSep <- optim(inits, likelihood3A_PFsep,
+                   R = R, Q = Q, P = PSep, N = N, M = M, L = L,
+                   method = "BFGS", hessian = TRUE)
+
+resultComb <- optim(inits, likelihood3A_PFcomb,
+                    R = R, Q = Q, P = PComb, N = N, M = M, L = L,
+                    method = "BFGS", hessian = TRUE)
+
+saveRDS(resultSep,  "SeberGLM_sep")
+saveRDS(resultComb, "SeberGLM_comb")
+
+# resultSep  <- readRDS("SeberGLM_sep")
+# resultComb <- readRDS("SeberGLM_comb")
+
+l <- dim(R)[1]
+
+#Functions to pad vector x to length n
+padRight <- function(x, n){
+  length(x) <- n
+  x
+}
+
+padLeft <- function(x, n){
+  out <- rep(NA, n)
+  out[(n - length(x) + 1):n] <- x
+  
+  out
+}
+
+#Function to build dataframe of estimates, standard errors, and confidence interval bounds given optim result
+getEstimsDf <- function(result){
+  #Get estimates
+  params <- result$par
+  
+  #Parameters in logit space
+  logitr0 <- params[1:(l-1)]
+  logitr1 <- params[l:(2*l-2)]
+  logitr2 <- params[(2*l-1):(3*l-2)]
+  logitS0 <- params[(3*l-1):(4*l-3)]
+  logitS1 <- params[(4*l-2):(5*l-4)]
+  logitS2 <- params[(5*l-3):(6*l-4)]
+  
+  logitf0l <- params[6*l-3]
+  logitf1l <- params[6*l-2]
+  
+  #Parameters bounded between 0 and 1
+  r0 <- ilogit(logitr0)
+  r1 <- ilogit(logitr1)
+  r2 <- ilogit(logitr2)
+  S0 <- ilogit(logitS0)
+  S1 <- ilogit(logitS1)
+  S2 <- ilogit(logitS2)
+  
+  f0l <- ilogit(logitf0l)
+  f1l <- ilogit(logitf1l)
+  
+  #Calculate standard errors in logit space
+  logitHess    <- result$hessian
+  logitCov <- solve(logitHess)
+  logitStdErrs <- sqrt(diag(logitCov))
+  
+  #Calculate 95% confidence interval bounds in logit space
+  logitLower <- params - 1.96 * logitStdErrs
+  logitUpper <- params + 1.96 * logitStdErrs
+  
+  #Bound 95% confidence interval bounds in bounded space
+  lower <- ilogit(logitLower)
+  upper <- ilogit(logitUpper)
+  
+  ilogitParams <- ilogit(params)
+  
+  #Calculate standard errors using delta method
+  stdErrs <- logitStdErrs * ilogitParams * (1 - ilogitParams)
+  
+  #Extract standard errors
+  r0StdErr <- stdErrs[1:(l-1)]
+  r1StdErr <- stdErrs[l:(2*l-2)]
+  r2StdErr <- stdErrs[(2*l-1):(3*l-2)]
+  S0StdErr <- stdErrs[(3*l-1):(4*l-3)]
+  S1StdErr <- stdErrs[(4*l-2):(5*l-4)]
+  S2StdErr <- stdErrs[(5*l-3):(6*l-4)]
+  
+  f0lStdErr <- stdErrs[6*l-3]
+  f1lStdErr <- stdErrs[6*l-2]
+  
+  #Extract lower bounds
+  r0Lower <- lower[1:(l-1)]
+  r1Lower <- lower[l:(2*l-2)]
+  r2Lower <- lower[(2*l-1):(3*l-2)]
+  S0Lower <- lower[(3*l-1):(4*l-3)]
+  S1Lower <- lower[(4*l-2):(5*l-4)]
+  S2Lower <- lower[(5*l-3):(6*l-4)]
+  
+  f0lLower <- lower[6*l-3]
+  f1lLower <- lower[6*l-2]
+  
+  #Extract upper bounds
+  r0Upper <- upper[1:(l-1)]
+  r1Upper <- upper[l:(2*l-2)]
+  r2Upper <- upper[(2*l-1):(3*l-2)]
+  S0Upper <- upper[(3*l-1):(4*l-3)]
+  S1Upper <- upper[(4*l-2):(5*l-4)]
+  S2Upper <- upper[(5*l-3):(6*l-4)]
+  
+  f0lUpper <- upper[6*l-3]
+  f1lUpper <- upper[6*l-2]
+  
+  #Pad S0, S1, r0, r1 values to l (there are l-1 S0, S1, r0, r1 estimates)
+  S0 <- padRight(S0, l)
+  S1 <- padRight(S1, l)
+  r0 <- padRight(r0, l)
+  r1 <- padRight(r1, l)
+  
+  S0StdErr <- padRight(S0StdErr, l)
+  S1StdErr <- padRight(S1StdErr, l)
+  r0StdErr <- padRight(r0StdErr, l)
+  r1StdErr <- padRight(r1StdErr, l)
+  
+  S0Lower <- padRight(S0Lower, l)
+  S1Lower <- padRight(S1Lower, l)
+  r0Lower <- padRight(r0Lower, l)
+  r1Lower <- padRight(r1Lower, l)
+  
+  S0Upper <- padRight(S0Upper, l)
+  S1Upper <- padRight(S1Upper, l)
+  r0Upper <- padRight(r0Upper, l)
+  r1Upper <- padRight(r1Upper, l)
+  
+  #Pad f0l, f1l values to l (there are 1 f0l, f1l estimates)
+  f0l <- padLeft(f0l, l)
+  f1l <- padLeft(f0l, l)
+  
+  f0lStdErr <- padLeft(f0lStdErr, l)
+  f1lStdErr <- padLeft(f1lStdErr, l)
+  
+  f0lLower <- padLeft(f0lLower, l)
+  f1lLower <- padLeft(f1lLower, l)
+  
+  f0lUpper <- padLeft(f0lUpper, l)
+  f1lUpper <- padLeft(f1lUpper, l)
+  
+  #Create dataframe
+  GLMEstimsDf <- data.frame(time = 1:l,
+                            r0Estim = r0, r1Estim = r1, r2Estim = r2,
+                            S0Estim = S0, S1Estim = S1, S2Estim = S2,
+                            f0Estim = f0l, f1Estim = f1l,
+                            r0StdErr, r1StdErr, r2StdErr,
+                            S0StdErr, S1StdErr, S2StdErr,
+                            f0StdErr = f0lStdErr, f1StdErr = f1lStdErr,
+                            r0Lower, r1Lower, r2Lower,
+                            S0Lower, S1Lower, S2Lower,
+                            f0Lower = f0lLower, f1Lower = f1lLower,
+                            r0Upper, r1Upper, r2Upper,
+                            S0Upper, S1Upper, S2Upper,
+                            f0Upper = f0lUpper, f1Upper = f1lUpper)
+  
+  #Format dataframe
+  df <- GLMEstimsDf %>%
+    pivot_longer(-time,
+                 names_to = c("Param", "Age", "Type"),
+                 names_pattern = "([A-Za-z])([0-9])([A-Za-z]+)") %>%
+    pivot_wider(names_from = Type,
+                values_from = value)
+
+  df
+}
+
+#Create dataframe from optim results
+dfSep  <- getEstimsDf(resultSep) %>%
+  mutate(Model = "Sep")
+dfComb <- getEstimsDf(resultComb) %>%
+  mutate(Model = "Comb")
+
+df <- rbind(dfSep, dfComb)]]>
+</code>
+</pre>
+</details>
+
+<details>
+<summary>RW1 and RW2</summary>
+<pre>
+<code><![CDATA[
+library(readxl)
+library(dplyr)
+library(tidyr)
+library(tibble)
+library(stringr)
+library(ggplot2)
+library(runjags)
+
+setwd(dirname(parent.frame(2)$ofile))
+
+windowsFonts(Font = windowsFont("CMU Serif"))
+
+#Read data
+adults    <- read_xlsx("../data/blackbirds/adults.xlsx")
+juveniles <- read_xlsx("../data/blackbirds/juveniles.xlsx")
+pulliSep  <- read_xlsx("../data/blackbirds/pulli.xlsx")
+
+#Select totals ringed
+N <- adults    %>% select("Total ringed") %>% pull
+M <- juveniles %>% select("Total ringed") %>% pull
+L <- pulliSep  %>% select("Total ringed") %>% pull
+
+#Select recovery counts
+R     <- adults    %>% select(-c("Year of ringing", "Total ringed"))
+Q     <- juveniles %>% select(-c("Year of ringing", "Total ringed"))
+PSep  <- pulliSep  %>% select(-c("Year of ringing", "Total ringed"))
+
+R     <- cbind(R,     end = N - rowSums(R))
+Q     <- cbind(Q,     end = M - rowSums(Q))
+PSep  <- cbind(PSep,  end = L - rowSums(PSep))
+
+#Convert recovery counts to matrix
+R     <- as.matrix(R)
+Q     <- as.matrix(Q)
+PSep  <- as.matrix(PSep)
+
+#Bundle data
+data_sep <- list(marr.p = PSep, marr.j = Q, marr.a = R, 
+                 rel.p  = L,    rel.j = M,  rel.a = N,
+                 n.occasions = dim(R)[2]-1)
+
+l <- dim(R)[1]
+
+#Initial values
+inits <- function(){list(logit_sp = runif(l, 0, 1),
+                         logit_sj = runif(l, 0, 1),
+                         logit_sa = runif(l, 0, 1),
+                         logit_rp = runif(l, 0, 1),
+                         logit_rj = runif(l, 0, 1), 
+                         logit_ra = runif(l, 0, 1))}
+
+#Parameters monitored
+parameters <- c("sp", "rp", "sj", "rj", "sa", "ra",
+                "tau_sp", "tau_rp", "tau_sj", "tau_rj", "tau_sa", "tau_ra")
+
+#MCMC settings
+ni <- 50000
+nt <- 10
+nb <- 10000 
+nc <- 3
+
+# Create JAGS model
+sepRW1Model <- run.jags(model = read.jagsfile("../JAGS_models/3a_TV_RW1_sep.txt"),
+                        data = data_sep, 
+                        inits = inits, 
+                        monitor = parameters,
+                        n.chains = nc, 
+                        thin = nt,
+                        sample = ni-nb,
+                        burnin = nb,
+                        adapt = 2000,
+                        method = "parallel")
+
+sepRW2Model <- run.jags(model = read.jagsfile("../JAGS_models/3a_TV_RW2_sep.txt"),
+                        data = data_sep, 
+                        inits = inits, 
+                        monitor = parameters,
+                        n.chains = nc, 
+                        thin = nt,
+                        sample = ni-nb,
+                        burnin = nb,
+                        adapt = 2000,
+                        method = "parallel")
+
+saveRDS(sepRW1Model, "sepRW1Model")
+saveRDS(sepRW2Model, "sepRW2Model")
+
+# sepRW1Model <- readRDS("sepRW1Model")
+# sepRW2Model <- readRDS("sepRW2Model")
+
+mcmcSepRW1    <- sepRW1Model$mcmc
+resultsSepRW1 <- as.data.frame(do.call(rbind, mcmcSepRW1))
+
+mcmcSepRW2    <- sepRW2Model$mcmc
+resultsSepRW2 <- as.data.frame(do.call(rbind, mcmcSepRW2))
+
+getSummary <- function(results){
+  results <- results %>%
+    {for (i in 1:20) {
+      .[[paste0("fa[", i, "]")]] <- (1 - .[[paste0("sa[", i, "]")]]) * .[[paste0("ra[", i, "]")]]
+    }
+      .
+    } %>%
+    {for (i in 1:20) {
+      .[[paste0("fj[", i, "]")]] <- (1 - .[[paste0("sj[", i, "]")]]) * .[[paste0("rj[", i, "]")]]
+    }
+      .
+    } %>%
+    {for (i in 1:20) {
+      .[[paste0("fp[", i, "]")]] <- (1 - .[[paste0("sp[", i, "]")]]) * .[[paste0("rp[", i, "]")]]
+    }
+      .
+    }
+  
+  summary <- results %>%
+    select(!starts_with("tau")) %>%
+    summarise(across(everything(), list(
+      mean = ~mean(.),
+      sd = ~sd(.),
+      lower = ~quantile(., 0.025),
+      upper = ~quantile(., 0.975)
+    ))) %>%
+    pivot_longer(
+      cols = everything(),
+      names_to = c("paramAgeYear", "stat"),
+      names_pattern = "^(.*)_(mean|sd|lower|upper)$",
+      values_to = "value"
+    )%>%
+    pivot_wider(
+      names_from = stat,
+      values_from = value
+    ) %>%
+    mutate(param = substr(paramAgeYear, 1, 1),
+           age   = substr(paramAgeYear, 2, 2),
+           year  = as.integer(sub(".*\\[(\\d+)\\]", "\\1", paramAgeYear))) %>%
+    select(year, param, age, mean, sd, lower, upper)
+  
+  summary
+}
+
+summSepRW1 <- getSummary(resultsSepRW1)
+summSepRW2 <- getSummary(resultsSepRW2)
+
+summSepRW1 <- summSepRW1 %>% mutate(model = "sepRW2")
+summSepRW2 <- summSepRW2 %>% mutate(model = "sepRW1")
+
+summ <- rbind(summSepRW1, summSepRW2)
+
+#Function to get sigma estimates
+tauToSigmaSumm <- function(results){
+  results %>% 
+    select(starts_with("tau")) %>%
+    mutate(across(everything(),
+                  function(x){1/sqrt(x)},
+                  .names = "sigma_{sub('^tau_', '', .col)}")) %>%
+    select(starts_with("sigma")) %>%
+    pivot_longer(cols = everything(),
+                 names_to = "paramAge") %>%
+    mutate(param = substr(paramAge, 7, 7),
+           age   = substr(paramAge, 8, 8)) %>%
+    select(-paramAge) %>%
+    group_by(param, age) %>%
+    summarise(Mean   = mean(value),
+              Median = median(value),
+              StdErr = sd(value),
+              Lower  = quantile(value, 0.025),
+              Upper  = quantile(value, 0.975))
+}
+
+sigmaSummRW1 <- tauToSigmaSumm(resultsSepRW1)
+sigmaSummRW2 <- tauToSigmaSumm(resultsSepRW2)]]>
+</code>
+</pre>
 </details>
 
 <style>

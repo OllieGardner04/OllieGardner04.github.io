@@ -4,17 +4,22 @@
 .MJX_SVG {
   font-family: inherit !important; /* Inherit font from the parent element */
 }
-
 .math, .mjx-math {
   font-family: 'Times New Roman', serif;  /* Customize math font */
   font-size: 1.1em;  /* Adjust math font size */
   line-height: 1.4em;  /* Adjust line height */
 }
-
 .MJX_SVG {
   display: inline-block; /* Keep math inline */
 }
-
 .MJX_Assistive_MathML {
   font-size: 0; /* Hide MathML assistive text */
 }
+
+/* Details dropdown with sidebar line */
+details {
+  border-left: 3px solid #000;
+  padding-left: 1rem;
+  margin: 1.5rem 0;
+}
+
