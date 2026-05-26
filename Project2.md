@@ -7,11 +7,13 @@ markdown: kramdown
 
 # Various approaches to estimating survival and recovery rates from dead recovery data
 
-This research was inspired by a group project in my third year, in which we estimated the survival and recovery rates of blackbirds and sandwich terns from a BTO dead recovery dataset. We had access to ring recovery data, and used multinomial models to estimate the rates. At the start of the project, I misinterpreted the data I had collected, and ended up creating my own model that, while valid, produced incorrect results. After the project, I found the correct data, and fit a more appropriate model. There is no benefit to fitting the initial model, but I present it as it's interesting. This page compares both models and contains the ongoing results of my research into this data.
+## Introduction
+
+This research was inspired by a group project in my third year, in which we estimated the survival and recovery rates of blackbirds and sandwich terns from a BTO dead recovery dataset. We had access to ring recovery data, and used multinomial models to estimate the rates. At the start of the project, I misinterpreted the data, and ended up creating my own model that, while valid, produced incorrect results. After the project, I found the correct data, and fit a more appropriate model. I also fit the initial model on the new data. There is no benefit to fitting the initial model, but I present it as it's interesting. This page compares both models and contains the ongoing results of my research into this data.
 
 I have not yet commented on the results of the Bayesian estimation or assessed goodness of fit.
 
-## Background and introduction
+## Background
 
 Bird ringing is a method to track birds; a small ring is attached to their legs that can be used to uniquely identify them. If the bird dies and is found by someone and they report the death to the ringing scheme, then the ringers know that that bird has died. In a bird ringing scheme, a cohort of birds are ringed each year, and deaths in subsequent years from each cohort are recorded. This results in a dataset that looks like the table below
 
