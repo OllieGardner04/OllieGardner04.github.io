@@ -39,10 +39,16 @@ details {
 }
 
 @media (max-width: 768px) {
-  .MathJax_Display, .katex-display, .math {
-    font-size: 0.85em;
-    transform-origin: left;
+  .MathJax_Display, .katex-display {
     transform: scale(0.9);
-    margin: 1em 0;
+    transform-origin: left top;
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .MathJax_Display, .katex-display {
+    transform: scale(0.8);
+    transform-origin: left top;
   }
 }
