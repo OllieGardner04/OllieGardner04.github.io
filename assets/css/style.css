@@ -38,14 +38,16 @@ details {
   -webkit-overflow-scrolling: touch;
 }
 
+@media only screen and (max-width: 768px) {
+   *, html, body, .row {
+      margin-left:0 !important;
+      margin-right:0 !important;
+      padding-left:0 !important;
+      padding-right:0 !important;
+   }
+}
+
 @media (max-width: 768px) {
-  body {
-    padding: 0px;
-  }
-  .container {
-    padding: 0px;
-  }
-  
   .MathJax_Display, .katex-display {
     transform: scale(0.9);
     transform-origin: left top;
@@ -54,13 +56,6 @@ details {
 }
 
 @media (max-width: 480px) {
-  body {
-    padding: 0px;
-  }
-  .container {
-    padding: 0px;
-  }
-  
   .MathJax_Display, .katex-display {
     transform: scale(0.8);
     transform-origin: left top;
