@@ -621,7 +621,7 @@ Details on how I use the Seber parameterisation are below
   </table>
 </div>
 
-Notice that $(1 - S_{4})r_{4}$ and $(1 - S_{4}')r_{4}'$ only appear as a product, thus making $S_{4}$, $r_{4}$, $S_{4}'$, and $r_{4}'$ unidentifiable. $S_{4}''$ appears in 2 separate places, meaning that it <i>is</i> identifiable. This means that $r_{4}''$ is also identifiable. To deal with the parameters taht can't be identified, I use the Brownie parameterisation for these parameters. Therefore, the tables become
+Notice that $(1 - S_{4})r_{4}$ and $(1 - S_{4}')r_{4}'$ only appear as a product, thus making $S_{4}$, $r_{4}$, $S_{4}'$, and $r_{4}'$ unidentifiable. $S_{4}''$ appears in 2 separate places, meaning that it <i>is</i> identifiable. This means that $r_{4}''$ is also identifiable. To deal with the parameters that can't be identified, I use the Brownie parameterisation for these parameters. Therefore, the tables become
 
 <div style="text-align: center; margin: 1em 0;">
   <table style="margin: 0 auto; border-collapse: collapse; width: auto;">
