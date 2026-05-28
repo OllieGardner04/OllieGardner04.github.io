@@ -1,9 +1,15 @@
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+}
+
 /* Prevent MathJax from affecting other text */
 .MJX_Assistive_MathML,
 .MJX_MathML,
 .MJX_SVG {
   font-family: inherit !important; /* Inherit font from the parent element */
 }
+
 .math, .mjx-math {
   font-family: 'Times New Roman', serif;
   font-size: 1.1em;
