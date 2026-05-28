@@ -1,6 +1,21 @@
-html, body {
-  overflow-x: hidden;
+body, html {
   width: 100%;
+  overflow-x: hidden;
+}
+
+.container {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+* {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.mjx-chtml {
+  max-width: 100% !important;
+  overflow-x: auto !important;
 }
 
 /* Prevent MathJax from affecting other text */
@@ -8,6 +23,7 @@ html, body {
 .MJX_MathML,
 .MJX_SVG {
   font-family: inherit !important; /* Inherit font from the parent element */
+  max-width: 100% !important;
 }
 
 .math, .mjx-math {
@@ -20,15 +36,23 @@ html, body {
 }
 
 @media (max-width: 768px) {
-  .math, .mjx-math {
-    font-size: 0.85em;  /* Smaller on mobile */
+  body {
+    font-size: 14px;  /* Smaller overall on mobile */
+  }
+  
+  .MJX_SVG {
     max-width: 100%;
-    overflow-x: auto;
+  }
+  
+  .mjx-chtml {
+    font-size: 0.7em !important;
+    transform-origin: left;
   }
 }
 
 .MJX_SVG {
   display: inline-block; /* Keep math inline */
+  max-width: 100%;
 }
 .MJX_Assistive_MathML {
   font-size: 0; /* Hide MathML assistive text */
