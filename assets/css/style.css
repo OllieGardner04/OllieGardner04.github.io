@@ -30,3 +30,19 @@ details {
   padding-left: 1rem;
   margin: 1.5rem 0;
 }
+
+.latex-container {
+.MathJax_Display, .katex-display, .math {
+  font-size: 1em;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 768px) {
+  .MathJax_Display, .katex-display, .math {
+    font-size: 0.85em;
+    transform-origin: left;
+    transform: scale(0.9);
+    margin: 1em 0;
+  }
+}
