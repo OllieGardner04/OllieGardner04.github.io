@@ -5,10 +5,22 @@
   font-family: inherit !important; /* Inherit font from the parent element */
 }
 .math, .mjx-math {
-  font-family: 'Times New Roman', serif;  /* Customize math font */
-  font-size: 1.1em;  /* Adjust math font size */
-  line-height: 1.4em;  /* Adjust line height */
+  font-family: 'Times New Roman', serif;
+  font-size: 1.1em;
+  line-height: 1.4em;
+  overflow-x: auto;  /* Scrollable math if it overflows */
+  display: block;
+  padding: 0.5rem 0;
 }
+
+@media (max-width: 768px) {
+  .math, .mjx-math {
+    font-size: 0.85em;  /* Smaller on mobile */
+    max-width: 100%;
+    overflow-x: auto;
+  }
+}
+
 .MJX_SVG {
   display: inline-block; /* Keep math inline */
 }
