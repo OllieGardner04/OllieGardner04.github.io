@@ -31,23 +31,14 @@ details {
   margin: 1.5rem 0;
 }
 
-.latex-container {
-.MathJax_Display, .katex-display, .math {
-  font-size: 1em;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-@media only screen and (max-width: 768px) {
-   *, html, body, .row {
-      margin-left:0 !important;
-      margin-right:0 !important;
-      padding-left:0 !important;
-      padding-right:0 !important;
-   }
-}
-
 @media (max-width: 768px) {
+	body {
+    padding: 8px;
+  }
+  .container {
+    padding: 10px;
+  }
+  
   .MathJax_Display, .katex-display {
     transform: scale(0.9);
     transform-origin: left top;
@@ -56,6 +47,13 @@ details {
 }
 
 @media (max-width: 480px) {
+	body {
+    padding: 8px;
+  }
+  .container {
+    padding: 10px;
+  }
+  
   .MathJax_Display, .katex-display {
     transform: scale(0.8);
     transform-origin: left top;
