@@ -40,10 +40,10 @@ details {
 
 @media (max-width: 768px) {
   body {
-    padding: 8px;
+    padding: 0px;
   }
   .container {
-    padding: 10px;
+    padding: 0px;
   }
   
   .MathJax_Display, .katex-display {
@@ -55,10 +55,10 @@ details {
 
 @media (max-width: 480px) {
   body {
-    padding: 8px;
+    padding: 0px;
   }
   .container {
-    padding: 10px;
+    padding: 0px;
   }
   
   .MathJax_Display, .katex-display {
