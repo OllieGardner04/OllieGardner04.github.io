@@ -12,6 +12,9 @@ I'm a 3rd year student at the University of Exeter, studying mathematics. I have
 	- numpy, pandas, matplotlib
 	- ggplot, dplyr, tidyr, etc.
 - Statistical inference
+	- Classical statistics
+	- Bayesian statistics
+	- Stochastic processes
 - App development using PyQt5
 
 ## Contact

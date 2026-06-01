@@ -5,7 +5,7 @@ permalink: /projects/project-2/
 markdown: kramdown
 ---
 
-# Various approaches to estimating survival and recovery rates from dead recovery data
+# Estimating survival and recovery rates from dead recovery data
 
 ## Introduction
 
@@ -1291,7 +1291,56 @@ As previously stated, there is no benefit to using this model, as the date of re
 
 ## Goodness of fit
 
-To assess goodness of fit, we can construct expected recovery tables for the relevant model, and then compare this to 
+To assess goodness of fit, we can construct expected recovery tables for the relevant model, and then compare this to the observed data. We can use a standard normal approximation to the multinomial distribution to do this. First, consider the adults. Let $R_{ij}$ represent the observed number of recoveries in year $j$ from cohort $i$. Then
+
+$${::nomarkdown}
+\begin{aligned}
+\text{E}(R_{ij})   &= N_{i}p_{ij} \\
+\text{Var}(R_{ij}) &= N_{i}p_{ij}(1 - p_{ij})
+\end{aligned}
+{:/}$$
+
+where $p_{ij}$ is the probability of recovery in year $j$ from cohort $i$. For example, $p_{1, 3} = S_{1}S_{2}f_{3}$. If we have reconstructed the table, then we will have the expected values, so let $E_{ij} = \text{E}(R_{ij})$. Then a standard normal approximation is given by
+
+$${::nomarkdown}
+\begin{aligned}
+Z_{ij} &= \frac{R_{ij} - \text{E}(R_{ij})}{\sqrt{\text{Var}(R_{ij})}} \\
+	   &= \frac{R_{ij} - E_{ij}}{\sqrt{N_{i}p_{ij}(1 - p_{ij})}} \\
+	   &= \frac{R_{ij} - E_{ij}}{\sqrt{E_{ij}(1 - \frac{E_{ij}}{N_{i}})}}
+\end{aligned}
+{:/}$$
+
+Or as is in Brownie(1985)
+
+$${::nomarkdown}
+Z_{ij} = \frac{R_{ij} - E_{ij}}{\sqrt{\frac{E_{ij}}{N_{i}}(N_{i} - E_{ij})}}
+{:/}$$
+
+By the same reasoning, the standard normal approximations for all 3 tables are given by
+
+$${::nomarkdown}
+\begin{aligned}
+Z_{ij}   &= \frac{R_{ij} - E_{ij}}  {\sqrt{\frac{E_{ij}}  {N_{i}}(N_{i} - E_{ij})}} \\
+Z_{ij}'  &= \frac{Q_{ij} - E_{ij}'} {\sqrt{\frac{E_{ij}'} {M_{i}}(M_{i} - E_{ij}')}} \\
+Z_{ij}'' &= \frac{P_{ij} - E_{ij}''}{\sqrt{\frac{E_{ij}''}{L_{i}}(L_{i} - E_{ij}'')}}
+\end{aligned}
+{:/}$$
+
+These can then be analysed to see if the model produces unrealistic estimates for a specific year/cohort, or to look for patterns in where the model fails (if it fails). 
+
+Additionally, a chi square test can be done, with a separate value for each table. The $\chi^{2}$ statistics are given by
+
+$${::nomarkdown}
+\begin{aligned}
+\chi ^{2}   &= \sum_{i}\sum_{j}\frac{(R_{ij} - E_{ij})  ^{2}}{E_{ij}} \\
+\chi '^{2}  &= \sum_{i}\sum_{j}\frac{(Q_{ij} - E_{ij}') ^{2}}{E_{ij}'} \\
+\chi ''^{2} &= \sum_{i}\sum_{j}\frac{(P_{ij} - E_{ij}'')^{2}}{E_{ij}''} \\
+\end{aligned}
+{:/}$$
+
+The degrees of freedom are given by $\frac{k(k-1)}{2} - K$, where $k$ is the number of years that a cohort is released and recovered (i.e. the recovery matrix is always square), and $K$ is the number of cells combined such that each cell has a value $\geq 5$. If cells require combining in the expected table, then they must also be combined in the observed table. $K$ is such that 1 degree of freedom is lost for every cell combined.
+
+The $\chi^{2}$ approach offers a single test statistic for each table, and can tell us whether or not the model fits the data. However, it requires expected values $\geq 5$ in each cell, whereas the standard normal approach avoids this. It's important to note that using a $\chi^{2}$ test for 3 groups with $\alpha = 0.05$ will give us a family wise error rate of 85.74%, which we would need to account for, e.g. by using a Bonferroni or Holm correction. The standard normal approach tells us where the model fails rather than simply whether it fails or not, which could be advantageous. 
 
 ## An example
 
@@ -1747,7 +1796,9 @@ The estimates of $\sigma$ are
 <tr><td>s</td><td>p</td><td>0.03804243</td><td>0.02767054</td><td>0.03591204</td><td>0.002300109</td><td>0.13582211</td></tr>
 </table>
 
-###Goodness of fit
+### Goodness of fit
+
+Several models have been presented here. I will discuss the goodness of fit of the GLM estimates under the Brownie parameterisation, and the RW2 estimates (either parameterisation is appropriate for the RW2, but I will use Seber, as that is the model under which the parameters were estimated).
 
 ### Data frames
 

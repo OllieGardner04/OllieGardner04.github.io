@@ -9,7 +9,7 @@ I'm Ollie, a student at the University of Exeter studying maths. Here you can se
 
 ## Maths projects
 - [Likelihood approach to changepoint detection + logarithmic data example](/projects/project-1/)
-- [Various approaches to estimating survival and recovery rates from dead recovery data](/projects/project-2/)
+- [Estimating survival and recovery rates from dead recovery data](/projects/project-2/)
 
 ## Programming projects
 - [Dashboard application using Python](#)

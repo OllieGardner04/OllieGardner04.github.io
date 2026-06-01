@@ -42,7 +42,7 @@ Then
 	
 \\[\boldsymbol{Y} = g(\boldsymbol{Z}) + \boldsymbol{\epsilon}\\]
 	
-This allows us to write the density of $\mathcal{F}$ in terms of the covariates $z_{i}$, from which the likelihood can be derived. This can then be maximised to find $\boldsymbol{\theta}$ as well as other model parameters.
+This allows us to write the density of $\mathcal{F}$ in terms of the covariates $z_{i}$, from which the likelihood can be derived. This can then be maximised to find $\theta$ as well as other model parameters.
 	
 ## An example
 	
@@ -55,7 +55,7 @@ Let
 	
 where $a > 0$, $0 < \theta < \max(\boldsymbol{Z})$.
 	
-Let $\mathcal{F} = N(0, \sigma^{2})$, the normal distribution.
+Let $\mathcal{F} = N(0, \sigma^{2})$, the normal distribution, and $\boldsymbol{\epsilon} \sim \mathcal{F}$.
 	
 Then $\boldsymbol{Y} = f(\boldsymbol{Z}) + \boldsymbol{\epsilon}$. This is the same as writing $y_{i} = N(f(z_{i}), \sigma^{2})$. This allows us to write the density function of the normal distribution as
 	
@@ -64,14 +64,14 @@ Then $\boldsymbol{Y} = f(\boldsymbol{Z}) + \boldsymbol{\epsilon}$. This is the s
 Therefore, the likelihood function is given by
 	
 \\[\begin{aligned}
-	L(\boldsymbol{\theta}, a, \sigma^{2}; \boldsymbol{Y}) &= \prod_{i=1}^{n}f_{\mathcal{F}}(y_{i}, z_{i}; \boldsymbol{\theta}, a, \sigma^{2}) \newline
+	L(\theta, a, \sigma^{2}; \boldsymbol{Y}) &= \prod_{i=1}^{n}f_{\mathcal{F}}(y_{i}, z_{i}; \theta, a, \sigma^{2}) \newline
 		&= \left(\frac{1}{\sigma\sqrt{2\pi}}\right)^{n}\prod_{i=1}^{n}e^{\frac{\left(y_{i} - g(z_{i})\right)^{2}}{2\sigma^{2}}}
 \end{aligned}\\]
 	
 So the log-likelihood is given by
 	
 \\[\begin{aligned}
-	l(\boldsymbol{\theta}, a, \sigma^{2}; \boldsymbol{Y}) &= n\log\left(\frac{1}{\sigma\sqrt{2\pi}}\right) + \sum_{i=1}^{n}\frac{\left(y_{i} - g(z_{i})\right)^{2}}{2\sigma^{2}} \newline
+	l(\theta, a, \sigma^{2}; \boldsymbol{Y}) &= n\log\left(\frac{1}{\sigma\sqrt{2\pi}}\right) + \sum_{i=1}^{n}\frac{\left(y_{i} - g(z_{i})\right)^{2}}{2\sigma^{2}} \newline
 		&= n\log\left(\frac{1}{\sigma\sqrt{2\pi}}\right) + \frac{1}{2\sigma^{2}}\sum_{i=1}^{n}\left(y_{i} - g(z_{i})\right)^{2} 
 \end{aligned}\\]
 	
@@ -121,4 +121,4 @@ The true and estimated values to 4 d.p. for this model are below
   </table>
 </div>
 	
-Clearly this is very accurate for these parameters and underlying model
+Clearly this is very accurate for these parameters and underlying model. 
