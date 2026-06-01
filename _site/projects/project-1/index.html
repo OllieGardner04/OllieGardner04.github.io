@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>Project 1</title>
+	
+	<meta name="google-site-verification" content="nCR3Wl-tw9MA0BznoRhw8cGS6-eNc7ckkUeNruk10cg">
+	
+	<link rel="stylesheet" href="/assets/css/style.css">
+
+    <style>
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, sans-serif;
+      }
+
+      nav {
+	background: #f5f5f5;
+	height: 60px;              /* fixed height */
+	display: flex;
+	align-items: center;       /* vertical centering */
+	justify-content: center;   /* horizontal centering */
+      }
+
+      nav a {
+        margin: 0 1rem;
+        text-decoration: none;
+        font-weight: 500;
+        color: #333;
+      }
+
+      nav a:hover {
+        text-decoration: underline;
+      }
+
+      .container > :first-child {
+  	margin-top: 0;
+      }
+
+      .container {
+        max-width: 90% !important;
+		padding-left: 125px !important;
+		padding-right: 125px !important;
+      }
+
+      html {
+	overflow-y: scroll;
+      }
+    </style>
+  <script>MathJax={"tex":{"inlineMath":[["$","$"],["\\(","\\)"]],"displayMath":[["$$","$$"],["\\[","\\]"]]},"svg":{"fontCache":"global"}}</script><script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+
+  <body>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/about/">About</a>
+    </nav>
+
+    <div class="container">
+      <h1 id="likelihood-approach-to-changepoint-detection--logarithmic-data-example">Likelihood approach to changepoint detection + logarithmic data example</h1>
+
+<h2 id="the-general-idea">The general idea</h2>
+
+<p>Let the underlying model be given by</p>
+
+<p>\[g(z) = \begin{cases}
+	g_{1}(z), &amp; \min(z) \leq z \leq \theta_{1}, \newline
+	g_{2}(z), &amp; \theta_{1} &lt; z \leq \theta_{2}, \newline
+	\vdots \newline
+	g_{n}(z), &amp; \theta_{n-1} &lt; z \leq \max(z).
+\end{cases}\]</p>
+
+<p>Let the noise be given by</p>
+
+<p>\[\boldsymbol{\epsilon} = \begin{bmatrix}
+	\epsilon_{1} \newline
+	\epsilon_{2} \newline
+	\vdots \newline
+	\epsilon_{n}
+\end{bmatrix}\]</p>
+
+<p>where $\epsilon_{i} \sim \mathcal{F}$, a probability distribution with mean 0.</p>
+
+<p>Let the covariates be given by</p>
+
+<p>\[\boldsymbol{Z} = \begin{bmatrix}
+	z_{1} \newline
+	z_{2} \newline
+	\vdots \newline
+	z_{n}
+\end{bmatrix}\]</p>
+
+<p>Then</p>
+
+<p>\[\boldsymbol{Y} = g(\boldsymbol{Z}) + \boldsymbol{\epsilon}\]</p>
+
+<p>This allows us to write the density of $\mathcal{F}$ in terms of the covariates $z_{i}$, from which the likelihood can be derived. This can then be maximised to find $\theta$ as well as other model parameters.</p>
+
+<h2 id="an-example">An example</h2>
+
+<p>Let</p>
+
+<p>\[g(z) = \begin{cases}
+	\log\left(\frac{z+a}{a}\right), 				  &amp; 0 \leq z \leq \theta, \newline
+	\log\left(\frac{(z+a)(z+a-\theta)}{a^{2}}\right), &amp; z &gt; \theta.
+\end{cases}\]</p>
+
+<p>where $a &gt; 0$, $0 &lt; \theta &lt; \max(\boldsymbol{Z})$.</p>
+
+<p>Let $\mathcal{F} = N(0, \sigma^{2})$, the normal distribution, and $\boldsymbol{\epsilon} \sim \mathcal{F}$.</p>
+
+<p>Then $\boldsymbol{Y} = f(\boldsymbol{Z}) + \boldsymbol{\epsilon}$. This is the same as writing $y_{i} = N(f(z_{i}), \sigma^{2})$. This allows us to write the density function of the normal distribution as</p>
+
+<p>\[f_{\mathcal{F}}(y_{i}, z_{i}) = \frac{1}{\sigma\sqrt{2\pi}}e^{\frac{\left(y_{i} - g(z_{i})\right)^{2}}{2\sigma^{2}}}\]</p>
+
+<p>Therefore, the likelihood function is given by</p>
+
+<p>\[\begin{aligned}
+	L(\theta, a, \sigma^{2}; \boldsymbol{Y}) &amp;= \prod_{i=1}^{n}f_{\mathcal{F}}(y_{i}, z_{i}; \theta, a, \sigma^{2}) \newline
+		&amp;= \left(\frac{1}{\sigma\sqrt{2\pi}}\right)^{n}\prod_{i=1}^{n}e^{\frac{\left(y_{i} - g(z_{i})\right)^{2}}{2\sigma^{2}}}
+\end{aligned}\]</p>
+
+<p>So the log-likelihood is given by</p>
+
+<p>\[\begin{aligned}
+	l(\theta, a, \sigma^{2}; \boldsymbol{Y}) &amp;= n\log\left(\frac{1}{\sigma\sqrt{2\pi}}\right) + \sum_{i=1}^{n}\frac{\left(y_{i} - g(z_{i})\right)^{2}}{2\sigma^{2}} \newline
+		&amp;= n\log\left(\frac{1}{\sigma\sqrt{2\pi}}\right) + \frac{1}{2\sigma^{2}}\sum_{i=1}^{n}\left(y_{i} - g(z_{i})\right)^{2} 
+\end{aligned}\]</p>
+
+<p>This can then be numerically maximised to find $\theta$. An example is below</p>
+
+<div style="text-align: center;">
+  <img src="/assets/images/dataImage.png" alt="dataImage" width="400">
+</div>
+
+<p>For this data, the $\boldsymbol{X}$ values used were</p>
+
+<p>\[\boldsymbol{X} = \begin{bmatrix}
+	0 \newline
+	1 \newline
+	\vdots \newline
+	1000
+\end{bmatrix}\]</p>
+
+<p>The true and estimated values to 4 d.p. for this model are below</p>
+
+<div style="text-align: center; margin: 1em 0;">
+  <table style="margin: 0 auto; border-collapse: collapse; width: auto;">
+    <thead>
+      <tr>
+        <th style="border: 1px solid #ccc; padding: 6px 12px;">Parameter</th>
+        <th style="border: 1px solid #ccc; padding: 6px 12px;">True value</th>
+        <th style="border: 1px solid #ccc; padding: 6px 12px;">Estimate</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="border: 1px solid #ccc; padding: 6px 12px;">a</td>
+        <td style="border: 1px solid #ccc; padding: 6px 12px;">1</td>
+        <td style="border: 1px solid #ccc; padding: 6px 12px;">0.9962</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ccc; padding: 6px 12px;">$\sigma$</td>
+        <td style="border: 1px solid #ccc; padding: 6px 12px;">0.5</td>
+        <td style="border: 1px solid #ccc; padding: 6px 12px;">0.5004</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ccc; padding: 6px 12px;">$\theta$</td>
+        <td style="border: 1px solid #ccc; padding: 6px 12px;">400</td>
+        <td style="border: 1px solid #ccc; padding: 6px 12px;">400.1035</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<p>Clearly this is very accurate for these parameters and underlying model.</p>
+
+    </div>
+  </body>
+</html>

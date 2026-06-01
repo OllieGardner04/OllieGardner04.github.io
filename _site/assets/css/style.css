@@ -1,0 +1,56 @@
+html, body {
+  overflow-x: hidden;
+}
+body {
+  position: relative
+}
+
+/* Prevent MathJax from affecting other text */
+.MJX_Assistive_MathML,
+.MJX_MathML,
+.MJX_SVG {
+  font-family: inherit !important; /* Inherit font from the parent element */
+}
+.math, .mjx-math {
+  font-family: 'Times New Roman', serif;  /* Customize math font */
+  font-size: 1.1em;  /* Adjust math font size */
+  line-height: 1.4em;  /* Adjust line height */
+}
+
+.MJX_SVG {
+  display: inline-block; /* Keep math inline */
+}
+.MJX_Assistive_MathML {
+  font-size: 0; /* Hide MathML assistive text */
+}
+
+/* Details dropdown with sidebar line */
+details {
+  border-left: 3px solid #000;
+  padding-left: 1rem;
+  margin: 1.5rem 0;
+}
+
+@media only screen and (max-width: 768px) {
+   *, html, body, .row {
+      margin-left:0 !important;
+      margin-right:0 !important;
+      padding-left:0 !important;
+      padding-right:0 !important;
+   }
+}
+
+@media (max-width: 768px) {
+  .MathJax_Display, .katex-display {
+    transform: scale(0.9);
+    transform-origin: left top;
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .MathJax_Display, .katex-display {
+    transform: scale(0.8);
+    transform-origin: left top;
+  }
+}
